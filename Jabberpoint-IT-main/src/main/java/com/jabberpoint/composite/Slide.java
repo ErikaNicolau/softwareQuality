@@ -11,11 +11,6 @@ import com.jabberpoint.composite.items.SlideItem;
 import com.jabberpoint.observer.SlideObserver;
 import com.jabberpoint.util.Constants;
 
-/**
- * Represents a slide in a presentation.
- * This class implements the Composite pattern as a composite component,
- * containing multiple SlideItems that can be drawn together.
- */
 public class Slide {
     private static final int DEFAULT_WIDTH = 1200;
     private static final int DEFAULT_HEIGHT = 800;
@@ -28,69 +23,37 @@ public class Slide {
     private final List<SlideItem> items;
     private final List<SlideObserver> observers;
 
-    /**
-     * Creates a new empty slide.
-     */
     public Slide() {
         this.title = "";
         this.items = new ArrayList<>();
         this.observers = new ArrayList<>();
     }
 
-    /**
-     * Adds an observer to be notified of slide changes.
-     * @param observer The observer to add
-     */
     public void addObserver(SlideObserver observer) {
         observers.add(observer);
     }
 
-    /**
-     * Removes an observer from the slide.
-     * @param observer The observer to remove
-     */
     public void removeObserver(SlideObserver observer) {
         observers.remove(observer);
     }
 
-    /**
-     * Notifies all observers of a change in the slide.
-     */
     private void notifyObservers() {
         observers.forEach(observer -> observer.update(this));
     }
 
-    /**
-     * Adds a new item to the slide.
-     * @param item The item to add
-     */
     public void append(SlideItem item) {
         items.add(item);
         notifyObservers();
     }
 
-    /**
-     * Gets the title of the slide.
-     * @return The current title
-     */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * Gets a copy of all items in the slide.
-     * @return A new list containing all items
-     */
     public List<SlideItem> getItems() {
         return new ArrayList<>(items);
     }
 
-    /**
-     * Gets the item at the specified index.
-     * @param index The index of the item to get
-     * @return The item at the specified index
-     * @throws IndexOutOfBoundsException if the index is out of range
-     */
     public SlideItem getItem(int index) {
         if (index < 0 || index >= items.size()) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + items.size());
@@ -110,20 +73,11 @@ public class Slide {
         notifyObservers();
     }
 
-    /**
-     * Sets the title of the slide.
-     * @param title The new title
-     */
     public void setTitle(String title) {
         this.title = title;
         notifyObservers();
     }
 
-    /**
-     * Draws the slide and all its items.
-     * The scale factor is calculated to fit the content within the available area
-     * while maintaining aspect ratio.
-     */
     public void draw(Graphics g, Rectangle area, ImageObserver observer) {
         float scale = getScale(area);
         int y = area.y;

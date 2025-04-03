@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-/**
- * XMLAccessor, reads and writes XML files with presentation data.
- */
+
 public class XMLAccessor {
     private static final String PRESENTATION_TAG = "presentation";
     private static final String SHOW_TITLE_TAG = "showtitle";
@@ -45,12 +43,6 @@ public class XMLAccessor {
     private static final String ITEM_SHAPE_TYPE_ATTRIBUTE = "shapeType";
     private static final String ITEM_FONT_SIZE_ATTRIBUTE = "fontSize";
 
-    /**
-     * Loads a presentation from an XML file.
-     * @param presentation The presentation to load into
-     * @param filename The name of the XML file
-     * @throws IOException If there's an error reading the file
-     */
     public void loadFile(Presentation presentation, String filename) throws IOException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -76,12 +68,6 @@ public class XMLAccessor {
         }
     }
 
-    /**
-     * Saves a presentation to an XML file.
-     * @param presentation The presentation to save
-     * @param filename The name of the XML file
-     * @throws IOException If there's an error writing the file
-     */
     public void saveFile(Presentation presentation, String filename) throws IOException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

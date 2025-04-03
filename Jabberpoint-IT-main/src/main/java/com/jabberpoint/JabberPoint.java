@@ -35,9 +35,6 @@ public class JabberPoint {
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 800;
 
-    /**
-     * The main program creates a Presentation and starts the application
-     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {

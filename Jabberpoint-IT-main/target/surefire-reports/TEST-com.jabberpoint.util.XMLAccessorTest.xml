@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.jabberpoint.composite.items.ShapeItemTest" time="0.017" tests="9" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.jabberpoint.util.XMLAccessorTest" time="0.115" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -59,13 +59,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testBoundingBox" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testColor" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testDraw" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testDefaultSize" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.015"/>
-  <testcase name="testShapeType" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testDifferentShapeTypes" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testPosition" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testCustomSize" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
-  <testcase name="testSizeAffectsBoundingBox" classname="com.jabberpoint.composite.items.ShapeItemTest" time="0.0"/>
+  <testcase name="testSaveAndLoadPresentation" classname="com.jabberpoint.util.XMLAccessorTest" time="0.098"/>
+  <testcase name="testLoadNonExistentFile" classname="com.jabberpoint.util.XMLAccessorTest" time="0.017"/>
+  <testcase name="testSaveToInvalidPath" classname="com.jabberpoint.util.XMLAccessorTest" time="0.0"/>
 </testsuite>

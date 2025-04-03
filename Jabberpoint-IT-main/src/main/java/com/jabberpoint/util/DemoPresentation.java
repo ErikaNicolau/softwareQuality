@@ -7,14 +7,9 @@ import com.jabberpoint.composite.items.BitmapItem;
 import com.jabberpoint.composite.items.ShapeItem;
 import java.awt.Color;
 
-/**
- * Utility class for creating a demo presentation.
- */
+
 public class DemoPresentation {
-    /**
-     * Creates a demo presentation with sample slides.
-     * @return A presentation with demo content
-     */
+
     public static Presentation createDemoPresentation() {
         Presentation presentation = new Presentation();
         presentation.setTitle("Welcome to JabberPoint");
@@ -148,11 +143,7 @@ public class DemoPresentation {
         instr3.setFontSize(28);
         instr3.setPosition(200, 380);
         slide3.append(instr3);
-        
-        // Add logo
-        BitmapItem logo = new BitmapItem(1, "JabberPoint.jpg");
-        logo.setPosition(550, 280);
-        slide3.append(logo);
+
         
         presentation.append(slide3);
 

@@ -1,5 +1,8 @@
 com\jabberpoint\composite\items\TextItemTest.class
 com\jabberpoint\composite\items\BitmapItemTest.class
-com\jabberpoint\composite\PresentationTest.class
 com\jabberpoint\composite\SlideTest.class
+com\jabberpoint\command\CommandTest.class
+com\jabberpoint\util\XMLAccessorTest.class
+com\jabberpoint\composite\PresentationTest.class
 com\jabberpoint\composite\items\ShapeItemTest.class
+com\jabberpoint\util\DemoPresentationTest.class
