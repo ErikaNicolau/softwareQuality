@@ -1,23 +1,56 @@
-# JabberPoint Presentation Application
+A simple and intuitive Java-based presentation tool that allows you to create, edit, and display slides with text, shapes, and images.
 
-A simple and intuitive presentation application that allows you to create and display slides.
+---
+
+## Features
+
+- Create and edit slides with text, shapes, and images  
+- Save and load presentations  
+- Keyboard navigation between slides  
+- Menu options for quick actions  
+- Demo presentation included at startup  
+
+---
 
 ## Requirements
 
-- Java 17 or higher
-- Maven (for building the application)
+- Java 17 or higher  
+- Maven  
+- (Optional) IntelliJ IDEA for development  
 
 ## How to Run
 
-1. **Build the Application**
+# Option 1
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/jabberpoint.git
+cd jabberpoint
+```
+
+2. **Build the Application**
    ```bash
    mvn clean package
    ```
 
-2. **Run the Application**
+3. **Run the Application**
    ```bash
    java -jar target/jabberpoint-1.0-SNAPSHOT.jar
    ```
+# Option 2
+
+Open IntelliJ IDEA
+
+Go to File > Open...
+
+Select the cloned jabberpoint/ folder
+
+Wait for Maven to import and resolve dependencies
+
+Open JabberPoint.java located at src/main/java/jabberpoint/JabberPoint.java
+
+Click the green Run button next to the main method
 
 ## Basic Controls
 
