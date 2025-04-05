@@ -26,17 +26,17 @@ public class TextItem extends SlideItem {
         this.fontSize = DEFAULT_FONT_SIZE;
     }
 
-    @Override
-    public String getContent() {
-        return text;
-    }
-
     public void setFontSize(int fontSize) {
         this.fontSize = fontSize;
     }
 
     public int getFontSize() {
         return fontSize;
+    }
+
+    @Override
+    public String getContent() {
+        return text;
     }
 
     @Override

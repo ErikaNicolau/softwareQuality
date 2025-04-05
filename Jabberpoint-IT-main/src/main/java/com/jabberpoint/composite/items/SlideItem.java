@@ -24,6 +24,14 @@ public abstract class SlideItem {
         return level;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
@@ -49,11 +57,4 @@ public abstract class SlideItem {
 
     public abstract String getContent();
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
 } 
