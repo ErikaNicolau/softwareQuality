@@ -1,42 +1,35 @@
 package com.jabberpoint.command;
 
-import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.composite.Slide;
 import com.jabberpoint.composite.items.TextItem;
 import com.jabberpoint.service.DialogService;
-import javax.swing.*;
-import java.awt.*;
+import com.jabberpoint.util.Constants;
+import com.jabberpoint.util.Position;
 
 public class AddTextCommand implements Command {
-    private final Presentation presentation;
+    private final Receiver receiver;
     private final DialogService dialogService;
     private final String text;
-    private final int level;
-    private final int x;
-    private final int y;
-    private final int fontSize;
+    private final Position position;
 
-    public AddTextCommand(Presentation presentation, DialogService dialogService, String text, int level, int x, int y, int fontSize) {
-        this.presentation = presentation;
+    public AddTextCommand(Receiver receiver, DialogService dialogService, String text, Position position) {
+        this.receiver = receiver;
         this.dialogService = dialogService;
         this.text = text;
-        this.level = level;
-        this.x = x;
-        this.y = y;
-        this.fontSize = fontSize;
+        this.position = position;
     }
 
     @Override
     public void execute() {
-        Slide currentSlide = presentation.getCurrentSlide();
+        Slide currentSlide = receiver.getCurrentSlide();
         if (currentSlide == null) {
             dialogService.showMessageDialog("Please create a slide first using the Slide menu!");
             return;
         }
-
-        TextItem textItem = new TextItem(level, text);
-        textItem.setPosition(x, y);
-        textItem.setFontSize(fontSize);
+        TextItem textItem = new TextItem(Constants.DEFAULT_LEVEL, text);
+        textItem.setPosition(position.getX(), position.getY());
+        textItem.setSize(position.getWidth(), position.getHeight());
+        textItem.setFontSize(Constants.DEFAULT_FONT_SIZE);
         currentSlide.append(textItem);
     }
 } 

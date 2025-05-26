@@ -1,13 +1,13 @@
 package com.jabberpoint.composite;
 
+import com.jabberpoint.command.Receiver;
+import com.jabberpoint.composite.items.SlideItem;
 import com.jabberpoint.observer.SlideObserver;
 import java.util.ArrayList;
 import java.util.List;
 import com.jabberpoint.util.Constants;
 
-public class Presentation {
-    private static final int INITIAL_SLIDE_NUMBER = 0;
-
+public class Presentation implements Receiver {
     private String title;
     private final List<Slide> slides;
     private int currentSlideNumber;
@@ -18,7 +18,7 @@ public class Presentation {
     public Presentation() {
         this.title = "";
         this.slides = new ArrayList<>();
-        this.currentSlideNumber = INITIAL_SLIDE_NUMBER;
+        this.currentSlideNumber = 0;
         this.observers = new ArrayList<>();
         this.hasUnsavedChanges = false;
         this.currentFileName = null;
@@ -91,7 +91,7 @@ public class Presentation {
 
     public void clear() {
         slides.clear();
-        currentSlideNumber = INITIAL_SLIDE_NUMBER;
+        currentSlideNumber = 0;
         notifyObservers();
         markAsChanged();
     }
@@ -111,5 +111,12 @@ public class Presentation {
 
     public String getCurrentFileName() {
         return currentFileName;
+    }
+
+    @Override
+    public void append(SlideItem item) {
+        getCurrentSlide().append(item);
+        markAsChanged();
+        notifyObservers();
     }
 } 

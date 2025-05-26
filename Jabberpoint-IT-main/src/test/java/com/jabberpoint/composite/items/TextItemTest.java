@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import com.jabberpoint.util.Constants;
 
 class TextItemTest {
     private TextItem textItem;
     private Graphics2D graphics;
     private static final String TEST_TEXT = "Test Text";
-    private static final int DEFAULT_FONT_SIZE = 20;
 
     @BeforeEach
     void setUp() {
@@ -21,7 +21,7 @@ class TextItemTest {
 
     @Test
     void testDefaultFontSize() {
-        assertEquals(DEFAULT_FONT_SIZE, textItem.getFontSize());
+        assertEquals(Constants.DEFAULT_FONT_SIZE, textItem.getFontSize());
     }
 
     @Test

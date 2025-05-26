@@ -4,9 +4,6 @@ import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.util.XMLAccessor;
 import com.jabberpoint.service.FileService;
 import com.jabberpoint.service.DialogService;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import java.io.IOException;
 
 public class SaveCommand implements Command {
@@ -23,7 +20,6 @@ public class SaveCommand implements Command {
     @Override
     public void execute() {
         String filename = presentation.getCurrentFileName();
-        
         if (filename == null) {
             filename = fileService.getFilePathToSave();
             if (filename == null) {
@@ -33,7 +29,6 @@ public class SaveCommand implements Command {
                 filename += ".xml";
             }
         }
-        
         try {
             XMLAccessor xmlAccessor = new XMLAccessor();
             xmlAccessor.saveFile(presentation, filename);

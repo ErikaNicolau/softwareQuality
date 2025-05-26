@@ -4,9 +4,6 @@ import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.util.XMLAccessor;
 import com.jabberpoint.service.FileService;
 import com.jabberpoint.service.DialogService;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import java.io.IOException;
 
 public class OpenCommand implements Command {
@@ -23,7 +20,6 @@ public class OpenCommand implements Command {
     @Override
     public void execute() {
         String filePath = fileService.getFilePathToOpen();
-
         if (filePath != null) {
             try {
                 XMLAccessor xmlAccessor = new XMLAccessor();

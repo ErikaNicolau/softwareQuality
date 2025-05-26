@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PositionDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.service</a> &gt; <span class="el_source">PositionDialog.java</span></div><h1>PositionDialog.java</h1><pre class="source lang-java linenums">package com.jabberpoint.service;
+
+import javax.swing.*;
+import java.awt.*;
+import com.jabberpoint.util.Position;
+
+public class PositionDialog {
+    private final JTextField xField;
+    private final JTextField yField;
+    private final JTextField widthField;
+    private final JTextField heightField;
+    private final JDialog dialog;
+
+<span class="nc" id="L14">    public PositionDialog(Frame parent) {</span>
+<span class="nc" id="L15">        dialog = new JDialog(parent, &quot;Set Position&quot;, true);</span>
+<span class="nc" id="L16">        dialog.setLayout(new GridLayout(5, 2, 5, 5));</span>
+
+<span class="nc" id="L18">        xField = new JTextField(&quot;50&quot;);</span>
+<span class="nc" id="L19">        yField = new JTextField(&quot;50&quot;);</span>
+<span class="nc" id="L20">        widthField = new JTextField(&quot;400&quot;);</span>
+<span class="nc" id="L21">        heightField = new JTextField(&quot;300&quot;);</span>
+
+<span class="nc" id="L23">        dialog.add(new JLabel(&quot;X Position:&quot;));</span>
+<span class="nc" id="L24">        dialog.add(xField);</span>
+<span class="nc" id="L25">        dialog.add(new JLabel(&quot;Y Position:&quot;));</span>
+<span class="nc" id="L26">        dialog.add(yField);</span>
+<span class="nc" id="L27">        dialog.add(new JLabel(&quot;Width:&quot;));</span>
+<span class="nc" id="L28">        dialog.add(widthField);</span>
+<span class="nc" id="L29">        dialog.add(new JLabel(&quot;Height:&quot;));</span>
+<span class="nc" id="L30">        dialog.add(heightField);</span>
+
+<span class="nc" id="L32">        JButton okButton = new JButton(&quot;OK&quot;);</span>
+<span class="nc" id="L33">        JButton cancelButton = new JButton(&quot;Cancel&quot;);</span>
+
+<span class="nc" id="L35">        okButton.addActionListener(e -&gt; dialog.dispose());</span>
+<span class="nc" id="L36">        cancelButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L37">            xField.setText(&quot;&quot;);</span>
+<span class="nc" id="L38">            yField.setText(&quot;&quot;);</span>
+<span class="nc" id="L39">            widthField.setText(&quot;&quot;);</span>
+<span class="nc" id="L40">            heightField.setText(&quot;&quot;);</span>
+<span class="nc" id="L41">            dialog.dispose();</span>
+<span class="nc" id="L42">        });</span>
+
+<span class="nc" id="L44">        JPanel buttonPanel = new JPanel();</span>
+<span class="nc" id="L45">        buttonPanel.add(okButton);</span>
+<span class="nc" id="L46">        buttonPanel.add(cancelButton);</span>
+<span class="nc" id="L47">        dialog.add(buttonPanel);</span>
+
+<span class="nc" id="L49">        dialog.pack();</span>
+<span class="nc" id="L50">        dialog.setLocationRelativeTo(parent);</span>
+<span class="nc" id="L51">    }</span>
+
+    public Position showDialog() {
+<span class="nc" id="L54">        dialog.setVisible(true);</span>
+        
+        try {
+<span class="nc" id="L57">            int x = Integer.parseInt(xField.getText().trim());</span>
+<span class="nc" id="L58">            int y = Integer.parseInt(yField.getText().trim());</span>
+<span class="nc" id="L59">            int width = Integer.parseInt(widthField.getText().trim());</span>
+<span class="nc" id="L60">            int height = Integer.parseInt(heightField.getText().trim());</span>
+            
+<span class="nc bnc" id="L62" title="All 8 branches missed.">            if (x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; width &gt; 0 &amp;&amp; height &gt; 0) {</span>
+<span class="nc" id="L63">                return new Position(x, y, width, height);</span>
+            }
+<span class="nc" id="L65">        } catch (NumberFormatException ignored) {</span>
+            // Invalid input, return null
+<span class="nc" id="L67">        }</span>
+<span class="nc" id="L68">        return null;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

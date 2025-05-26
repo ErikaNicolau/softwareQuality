@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import com.jabberpoint.util.Constants;
 
 class ShapeItemTest {
     private ShapeItem shapeItem;
     private static final String SHAPE_TYPE = "Rectangle";
     private static final Color SHAPE_COLOR = Color.RED;
-    private static final int DEFAULT_WIDTH = 200;
-    private static final int DEFAULT_HEIGHT = 150;
 
     @BeforeEach
     void setUp() {
@@ -20,8 +19,8 @@ class ShapeItemTest {
 
     @Test
     void testDefaultSize() {
-        assertEquals(DEFAULT_WIDTH, shapeItem.getBoundingBox().width);
-        assertEquals(DEFAULT_HEIGHT, shapeItem.getBoundingBox().height);
+        assertEquals(Constants.DEFAULT_WIDTH, shapeItem.getBoundingBox().width);
+        assertEquals(Constants.DEFAULT_HEIGHT, shapeItem.getBoundingBox().height);
     }
 
     @Test
@@ -85,13 +84,13 @@ class ShapeItemTest {
 
     @Test
     void testSizeAffectsBoundingBox() {
-        Rectangle defaultBounds = shapeItem.getBoundingBox();
+        int customWidth = 400;
+        int customHeight = 300;
+        shapeItem.setSize(customWidth, customHeight);
+        Rectangle customBounds = shapeItem.getBoundingBox();
         
-        shapeItem.setSize(400, 300);
-        Rectangle largeBounds = shapeItem.getBoundingBox();
-        
-        assertTrue(largeBounds.width > defaultBounds.width);
-        assertTrue(largeBounds.height > defaultBounds.height);
+        assertEquals(customWidth, customBounds.width);
+        assertEquals(customHeight, customBounds.height);
     }
 
     @Test

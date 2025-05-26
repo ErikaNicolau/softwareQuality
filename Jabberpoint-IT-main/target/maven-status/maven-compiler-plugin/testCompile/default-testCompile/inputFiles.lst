@@ -1,8 +1,12 @@
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\AddImageCommandTest.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\AddShapeCommandTest.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\AddSlideCommandTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\AddTextCommandTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\CommandTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\ExitCommandTest.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\GotoCommandTest.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\NewCommandTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\NextSlideCommandTest.java
-D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\OpenCommandTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\command\PrevSlideCommandTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\composite\items\BitmapItemTest.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\test\java\com\jabberpoint\composite\items\ShapeItemTest.java

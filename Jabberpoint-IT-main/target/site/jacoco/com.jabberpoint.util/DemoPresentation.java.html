@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DemoPresentation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.util</a> &gt; <span class="el_source">DemoPresentation.java</span></div><h1>DemoPresentation.java</h1><pre class="source lang-java linenums">package com.jabberpoint.util;
+
+import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.composite.Slide;
+import com.jabberpoint.composite.items.TextItem;
+import com.jabberpoint.composite.items.BitmapItem;
+import com.jabberpoint.composite.items.ShapeItem;
+import java.awt.Color;
+
+
+<span class="nc" id="L11">public class DemoPresentation {</span>
+
+    public static Presentation createDemoPresentation() {
+<span class="fc" id="L14">        Presentation presentation = new Presentation();</span>
+<span class="fc" id="L15">        presentation.setTitle(&quot;Welcome to JabberPoint&quot;);</span>
+
+        // First slide - Welcome
+<span class="fc" id="L18">        Slide slide1 = new Slide();</span>
+<span class="fc" id="L19">        slide1.setTitle(&quot;Welcome&quot;);</span>
+        
+        // Add decorative background shape with a nicer color
+<span class="fc" id="L22">        ShapeItem bgShape1 = new ShapeItem(0, &quot;rectangle&quot;, new Color(65, 105, 225, 20));</span>
+<span class="fc" id="L23">        bgShape1.setSize(900, 600);</span>
+<span class="fc" id="L24">        bgShape1.setPosition(50, 50);</span>
+<span class="fc" id="L25">        slide1.append(bgShape1);</span>
+        
+        // Add welcome text with better positioning and larger size
+<span class="fc" id="L28">        TextItem welcomeText = new TextItem(0, &quot;Welcome to&quot;);</span>
+<span class="fc" id="L29">        welcomeText.setFontSize(56);</span>
+<span class="fc" id="L30">        welcomeText.setPosition(150, 180);</span>
+<span class="fc" id="L31">        slide1.append(welcomeText);</span>
+        
+        // Add main title with larger size and better positioning
+<span class="fc" id="L34">        TextItem mainTitle = new TextItem(0, &quot;JabberPoint&quot;);</span>
+<span class="fc" id="L35">        mainTitle.setFontSize(92);</span>
+<span class="fc" id="L36">        mainTitle.setPosition(150, 270);</span>
+<span class="fc" id="L37">        slide1.append(mainTitle);</span>
+        
+        // Add subtitle with better spacing
+<span class="fc" id="L40">        TextItem subtitle = new TextItem(1, &quot;The Modern Java Presentation Tool&quot;);</span>
+<span class="fc" id="L41">        subtitle.setFontSize(36);</span>
+<span class="fc" id="L42">        subtitle.setPosition(150, 350);</span>
+<span class="fc" id="L43">        slide1.append(subtitle);</span>
+        
+        // Add version info with better styling
+<span class="fc" id="L46">        TextItem version = new TextItem(2, &quot;Version 2.0&quot;);</span>
+<span class="fc" id="L47">        version.setFontSize(24);</span>
+<span class="fc" id="L48">        version.setPosition(150, 420);</span>
+<span class="fc" id="L49">        slide1.append(version);</span>
+        
+        // Add credits with better layout and personalized text
+<span class="fc" id="L52">        TextItem credits1 = new TextItem(2, &quot;Originally created by Ian Darwin (1996-2000)&quot;);</span>
+<span class="fc" id="L53">        credits1.setFontSize(20);</span>
+<span class="fc" id="L54">        credits1.setPosition(150, 500);</span>
+<span class="fc" id="L55">        slide1.append(credits1);</span>
+        
+<span class="fc" id="L57">        TextItem credits2 = new TextItem(2, &quot;Enhanced by Mihaela and Erika, Pro IT Specialists&quot;);</span>
+<span class="fc" id="L58">        credits2.setFontSize(20);</span>
+<span class="fc" id="L59">        credits2.setPosition(150, 530);</span>
+<span class="fc" id="L60">        slide1.append(credits2);</span>
+        
+<span class="fc" id="L62">        presentation.append(slide1);</span>
+
+        // Second slide - Features
+<span class="fc" id="L65">        Slide slide2 = new Slide();</span>
+<span class="fc" id="L66">        slide2.setTitle(&quot;Features&quot;);</span>
+        
+        // Add decorative background shape with a nicer color
+<span class="fc" id="L69">        ShapeItem bgShape2 = new ShapeItem(0, &quot;rectangle&quot;, new Color(65, 105, 225, 15));</span>
+<span class="fc" id="L70">        bgShape2.setSize(900, 600);</span>
+<span class="fc" id="L71">        bgShape2.setPosition(50, 50);</span>
+<span class="fc" id="L72">        slide2.append(bgShape2);</span>
+        
+        // Add main heading with better styling
+<span class="fc" id="L75">        TextItem featureTitle = new TextItem(0, &quot;Powerful Features&quot;);</span>
+<span class="fc" id="L76">        featureTitle.setFontSize(72);</span>
+<span class="fc" id="L77">        featureTitle.setPosition(150, 150);</span>
+<span class="fc" id="L78">        slide2.append(featureTitle);</span>
+        
+        // Add subheading
+<span class="fc" id="L81">        TextItem featureSubtitle = new TextItem(1, &quot;Everything you need for great presentations&quot;);</span>
+<span class="fc" id="L82">        featureSubtitle.setFontSize(32);</span>
+<span class="fc" id="L83">        featureSubtitle.setPosition(150, 230);</span>
+<span class="fc" id="L84">        slide2.append(featureSubtitle);</span>
+        
+        // Add features in two columns with better spacing and styling
+<span class="fc" id="L87">        TextItem feature1 = new TextItem(1, &quot;✦  Modern Interface&quot;);</span>
+<span class="fc" id="L88">        feature1.setFontSize(32);</span>
+<span class="fc" id="L89">        feature1.setPosition(200, 320);</span>
+<span class="fc" id="L90">        slide2.append(feature1);</span>
+        
+<span class="fc" id="L92">        TextItem feature2 = new TextItem(1, &quot;✦  Rich Text Support&quot;);</span>
+<span class="fc" id="L93">        feature2.setFontSize(32);</span>
+<span class="fc" id="L94">        feature2.setPosition(200, 380);</span>
+<span class="fc" id="L95">        slide2.append(feature2);</span>
+        
+<span class="fc" id="L97">        TextItem feature3 = new TextItem(1, &quot;✦  Image Integration&quot;);</span>
+<span class="fc" id="L98">        feature3.setFontSize(32);</span>
+<span class="fc" id="L99">        feature3.setPosition(550, 320);</span>
+<span class="fc" id="L100">        slide2.append(feature3);</span>
+        
+<span class="fc" id="L102">        TextItem feature4 = new TextItem(1, &quot;✦  Shape Elements&quot;);</span>
+<span class="fc" id="L103">        feature4.setFontSize(32);</span>
+<span class="fc" id="L104">        feature4.setPosition(550, 380);</span>
+<span class="fc" id="L105">        slide2.append(feature4);</span>
+        
+        // Add a hint with better visibility
+<span class="fc" id="L108">        TextItem hint = new TextItem(2, &quot;Press → or Page Down for next slide&quot;);</span>
+<span class="fc" id="L109">        hint.setFontSize(20);</span>
+<span class="fc" id="L110">        hint.setPosition(150, 520);</span>
+<span class="fc" id="L111">        slide2.append(hint);</span>
+        
+<span class="fc" id="L113">        presentation.append(slide2);</span>
+
+        // Third slide - Getting Started
+<span class="fc" id="L116">        Slide slide3 = new Slide();</span>
+<span class="fc" id="L117">        slide3.setTitle(&quot;Getting Started&quot;);</span>
+        
+        // Add decorative background shape
+<span class="fc" id="L120">        ShapeItem bgShape3 = new ShapeItem(0, &quot;rectangle&quot;, new Color(65, 105, 225, 15));</span>
+<span class="fc" id="L121">        bgShape3.setSize(900, 600);</span>
+<span class="fc" id="L122">        bgShape3.setPosition(50, 50);</span>
+<span class="fc" id="L123">        slide3.append(bgShape3);</span>
+        
+        // Add title
+<span class="fc" id="L126">        TextItem startTitle = new TextItem(0, &quot;Create Your First Presentation&quot;);</span>
+<span class="fc" id="L127">        startTitle.setFontSize(56);</span>
+<span class="fc" id="L128">        startTitle.setPosition(150, 180);</span>
+<span class="fc" id="L129">        slide3.append(startTitle);</span>
+        
+        // Add instructions
+<span class="fc" id="L132">        TextItem instr1 = new TextItem(1, &quot;1. Click File → New for a fresh start&quot;);</span>
+<span class="fc" id="L133">        instr1.setFontSize(28);</span>
+<span class="fc" id="L134">        instr1.setPosition(200, 280);</span>
+<span class="fc" id="L135">        slide3.append(instr1);</span>
+        
+<span class="fc" id="L137">        TextItem instr2 = new TextItem(1, &quot;2. Use Edit menu to add content&quot;);</span>
+<span class="fc" id="L138">        instr2.setFontSize(28);</span>
+<span class="fc" id="L139">        instr2.setPosition(200, 330);</span>
+<span class="fc" id="L140">        slide3.append(instr2);</span>
+        
+<span class="fc" id="L142">        TextItem instr3 = new TextItem(1, &quot;3. Save your work with File → Save&quot;);</span>
+<span class="fc" id="L143">        instr3.setFontSize(28);</span>
+<span class="fc" id="L144">        instr3.setPosition(200, 380);</span>
+<span class="fc" id="L145">        slide3.append(instr3);</span>
+
+        
+<span class="fc" id="L148">        presentation.append(slide3);</span>
+
+<span class="fc" id="L150">        return presentation;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

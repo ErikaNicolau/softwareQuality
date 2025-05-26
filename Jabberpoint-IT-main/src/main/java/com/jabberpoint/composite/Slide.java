@@ -85,7 +85,7 @@ public class Slide {
         // Draw all items
         for (SlideItem item : items) {
             item.draw(g, area.x, y, scale, observer);
-            y += item.getBoundingBox().height + 10;
+            y += item.getBoundingBox().height + Constants.ITEM_SPACING;
         }
     }
 

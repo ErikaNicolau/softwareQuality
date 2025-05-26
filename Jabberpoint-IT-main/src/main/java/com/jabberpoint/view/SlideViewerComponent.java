@@ -2,24 +2,19 @@ package com.jabberpoint.view;
 
 import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.composite.Slide;
-import com.jabberpoint.composite.items.SlideItem;
 import com.jabberpoint.observer.SlideObserver;
 import com.jabberpoint.factory.DrawerFactory;
+import com.jabberpoint.util.Constants;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.BorderFactory;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.Image;
 
 public class SlideViewerComponent extends JComponent implements SlideObserver {
-    private static final int DEFAULT_WIDTH = 1200;
-    private static final int DEFAULT_HEIGHT = 800;
-    private static final int TITLE_FONT_SIZE = 36;
-    private static final int ITEM_SPACING = 30;
-    private static final String FONT_NAME = "Segoe UI";
-    private static final int FONT_STYLE = Font.BOLD;
     private static final Color BACKGROUND_COLOR_TOP = new Color(240, 240, 255);
     private static final Color BACKGROUND_COLOR_BOTTOM = new Color(220, 220, 240);
     private static final Color TEXT_COLOR = new Color(40, 40, 40);
@@ -44,7 +39,7 @@ public class SlideViewerComponent extends JComponent implements SlideObserver {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        return new Dimension(Constants.WIDTH, Constants.HEIGHT);
     }
 
     @Override

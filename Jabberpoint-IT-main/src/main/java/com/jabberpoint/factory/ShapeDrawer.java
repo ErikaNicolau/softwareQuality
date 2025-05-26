@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.ImageObserver;
 
-public class ShapeDrawer implements Drawer, ItemDrawer {
+public class ShapeDrawer implements ItemDrawer {
     private final ShapeItem shapeItem;
 
     public ShapeDrawer(ShapeItem shapeItem) {

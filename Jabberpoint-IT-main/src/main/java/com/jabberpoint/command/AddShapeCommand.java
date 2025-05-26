@@ -1,44 +1,38 @@
 package com.jabberpoint.command;
 
-import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.composite.Slide;
 import com.jabberpoint.composite.items.ShapeItem;
 import com.jabberpoint.service.DialogService;
-import javax.swing.*;
-import java.awt.*;
+import com.jabberpoint.util.Constants;
+import com.jabberpoint.util.Position;
+import java.awt.Color;
 
 public class AddShapeCommand implements Command {
-    private final Presentation presentation;
+    private final Receiver receiver;
     private final DialogService dialogService;
     private final String shapeType;
     private final Color color;
-    private final int x;
-    private final int y;
-    private final int width;
-    private final int height;
+    private final Position position;
 
-    public AddShapeCommand(Presentation presentation, DialogService dialogService, String shapeType, Color color, int x, int y, int width, int height) {
-        this.presentation = presentation;
+    public AddShapeCommand(Receiver receiver, DialogService dialogService, String shapeType, Color color, Position position) {
+        this.receiver = receiver;
         this.dialogService = dialogService;
         this.shapeType = shapeType;
         this.color = color;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.position = position;
     }
 
     @Override
     public void execute() {
-        if (presentation.getCurrentSlide() == null) {
+        if (receiver.getCurrentSlide() == null) {
             dialogService.showMessageDialog("Please create a slide first using the Slide menu!");
             return;
         }
-
         try {
-            ShapeItem shapeItem = new ShapeItem(1, shapeType, color);
-            shapeItem.setPosition(x, y);
-            shapeItem.setSize(width, height);
-            presentation.getCurrentSlide().append(shapeItem);
+            ShapeItem shapeItem = new ShapeItem(Constants.DEFAULT_LEVEL, shapeType, color);
+            shapeItem.setPosition(position.getX(), position.getY());
+            shapeItem.setSize(position.getWidth(), position.getHeight());
+            receiver.getCurrentSlide().append(shapeItem);
             dialogService.showMessageDialog("Shape added successfully!");
         } catch (IllegalArgumentException e) {
             dialogService.showMessageDialog("Error adding shape: " + e.getMessage());

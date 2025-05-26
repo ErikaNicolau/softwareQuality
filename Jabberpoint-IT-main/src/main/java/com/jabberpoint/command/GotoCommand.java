@@ -1,8 +1,6 @@
 package com.jabberpoint.command;
 
 import com.jabberpoint.composite.Presentation;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 public class GotoCommand implements Command {
     private final Presentation presentation;

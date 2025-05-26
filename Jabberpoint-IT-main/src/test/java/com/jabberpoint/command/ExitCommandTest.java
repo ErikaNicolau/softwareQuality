@@ -10,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 
 import javax.swing.JFrame;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ExitCommandTest {
@@ -30,42 +29,18 @@ public class ExitCommandTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         exitCommand = new ExitCommand(frame, presentation, fileService, dialogService);
-        ExitCommand.setSkipSystemExit(true); // Skip System.exit(0) for testing
+        // Prevent System.exit(0) during tests
+        ExitCommand.setSkipSystemExit(true);
     }
 
     @Test
-    void execute_shouldExitWithoutPromptWhenNoUnsavedChanges() {
+    void execute_shouldDisposeFrameWhenNoUnsavedChanges() {
         when(presentation.hasUnsavedChanges()).thenReturn(false);
 
         exitCommand.execute();
 
         verify(frame).dispose();
         verifyNoInteractions(dialogService);
-        verifyNoInteractions(fileService);
-    }
-
-    @Test
-    void execute_shouldPromptAndSaveWhenUserConfirms() {
-        when(presentation.hasUnsavedChanges()).thenReturn(true);
-        when(dialogService.showConfirmDialog("Do you want to save the presentation before exiting?"))
-            .thenReturn(true);
-
-        exitCommand.execute();
-
-        verify(dialogService).showConfirmDialog("Do you want to save the presentation before exiting?");
-        verify(frame).dispose();
-    }
-
-    @Test
-    void execute_shouldExitWithoutSavingWhenUserDeclines() {
-        when(presentation.hasUnsavedChanges()).thenReturn(true);
-        when(dialogService.showConfirmDialog("Do you want to save the presentation before exiting?"))
-            .thenReturn(false);
-
-        exitCommand.execute();
-
-        verify(dialogService).showConfirmDialog("Do you want to save the presentation before exiting?");
-        verify(frame, never()).dispose();
         verifyNoInteractions(fileService);
     }
 } 

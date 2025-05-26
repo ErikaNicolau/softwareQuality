@@ -7,9 +7,6 @@ import java.awt.image.ImageObserver;
 import com.jabberpoint.util.Constants;
 
 public class ShapeItem extends SlideItem {
-    private static final int DEFAULT_WIDTH = 200;
-    private static final int DEFAULT_HEIGHT = 150;
-
     private String shapeType;
     private Color color;
     private Rectangle defaultBounds;
@@ -29,8 +26,8 @@ public class ShapeItem extends SlideItem {
         }
         this.shapeType = shapeType;
         this.color = color;
-        this.defaultBounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT); // Set initial size to default
+        this.defaultBounds = new Rectangle(0, 0, Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);
+        setSize(Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT); // Set initial size to default
     }
 
     public String getShapeType() {

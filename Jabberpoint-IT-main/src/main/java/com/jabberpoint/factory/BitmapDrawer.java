@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.ImageObserver;
 
-public class BitmapDrawer implements Drawer, ItemDrawer {
+public class BitmapDrawer implements ItemDrawer {
     private final BitmapItem bitmapItem;
 
     public BitmapDrawer(BitmapItem bitmapItem) {

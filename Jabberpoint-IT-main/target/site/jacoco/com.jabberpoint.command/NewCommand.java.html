@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.command</a> &gt; <span class="el_source">NewCommand.java</span></div><h1>NewCommand.java</h1><pre class="source lang-java linenums">package com.jabberpoint.command;
+
+import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.composite.Slide;
+import com.jabberpoint.composite.items.TextItem;
+import com.jabberpoint.composite.items.ShapeItem;
+import com.jabberpoint.service.DialogService;
+import com.jabberpoint.util.Constants;
+import java.awt.Color;
+
+public class NewCommand implements Command {
+    private final Presentation presentation;
+    private final DialogService dialogService;
+
+<span class="fc" id="L15">    public NewCommand(Presentation presentation, DialogService dialogService) {</span>
+<span class="fc" id="L16">        this.presentation = presentation;</span>
+<span class="fc" id="L17">        this.dialogService = dialogService;</span>
+<span class="fc" id="L18">    }</span>
+
+    @Override
+    public void execute() {
+<span class="fc" id="L22">        presentation.clear();</span>
+<span class="fc" id="L23">        Slide newSlide = new Slide();</span>
+<span class="fc" id="L24">        newSlide.setTitle(&quot;Welcome to JabberPoint&quot;);</span>
+<span class="fc" id="L25">        ShapeItem decorativeShape = new ShapeItem(0, &quot;rectangle&quot;, new Color(70, 130, 180, 30));</span>
+<span class="fc" id="L26">        decorativeShape.setSize(Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);</span>
+<span class="fc" id="L27">        decorativeShape.setPosition(100, 100);</span>
+<span class="fc" id="L28">        newSlide.append(decorativeShape);</span>
+<span class="fc" id="L29">        TextItem titleItem = new TextItem(0, &quot;Welcome to JabberPoint&quot;);</span>
+<span class="fc" id="L30">        titleItem.setFontSize(Constants.TITLE_FONT_SIZE);</span>
+<span class="fc" id="L31">        titleItem.setPosition(150, 180);</span>
+<span class="fc" id="L32">        newSlide.append(titleItem);</span>
+<span class="fc" id="L33">        TextItem subtitleItem = new TextItem(1, &quot;Create Professional Presentations&quot;);</span>
+<span class="fc" id="L34">        subtitleItem.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L35">        subtitleItem.setPosition(150, 260);</span>
+<span class="fc" id="L36">        newSlide.append(subtitleItem);</span>
+<span class="fc" id="L37">        TextItem feature1 = new TextItem(2, &quot;✦  Rich Text Support&quot;);</span>
+<span class="fc" id="L38">        feature1.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L39">        feature1.setPosition(200, 350);</span>
+<span class="fc" id="L40">        newSlide.append(feature1);</span>
+<span class="fc" id="L41">        TextItem feature2 = new TextItem(2, &quot;✦  Image Integration&quot;);</span>
+<span class="fc" id="L42">        feature2.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L43">        feature2.setPosition(200, 400);</span>
+<span class="fc" id="L44">        newSlide.append(feature2);</span>
+<span class="fc" id="L45">        TextItem feature3 = new TextItem(2, &quot;✦  Shape Elements&quot;);</span>
+<span class="fc" id="L46">        feature3.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L47">        feature3.setPosition(500, 350);</span>
+<span class="fc" id="L48">        newSlide.append(feature3);</span>
+<span class="fc" id="L49">        TextItem feature4 = new TextItem(2, &quot;✦  Smooth Navigation&quot;);</span>
+<span class="fc" id="L50">        feature4.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L51">        feature4.setPosition(500, 400);</span>
+<span class="fc" id="L52">        newSlide.append(feature4);</span>
+<span class="fc" id="L53">        TextItem hint = new TextItem(1, &quot;Press 'Edit' menu to start creating your presentation&quot;);</span>
+<span class="fc" id="L54">        hint.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L55">        hint.setPosition(150, 500);</span>
+<span class="fc" id="L56">        newSlide.append(hint);</span>
+<span class="fc" id="L57">        presentation.append(newSlide);</span>
+<span class="fc" id="L58">        dialogService.showMessageDialog(&quot;Welcome to JabberPoint!\nUse the Edit menu to add content to your presentation.&quot;);</span>
+<span class="fc" id="L59">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
