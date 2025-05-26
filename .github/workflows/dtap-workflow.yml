@@ -23,7 +23,17 @@ jobs:
     
     - name: Build and Test
       run: mvn -B clean package
-    
+
+    - name: List Surefire Reports Directory
+      run: dir target\surefire-reports
+      shell: pwsh
+      continue-on-error: true
+
+    - name: List JaCoCo Reports Directory
+      run: dir target\site\jacoco
+      shell: pwsh
+      continue-on-error: true
+
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
       with:
