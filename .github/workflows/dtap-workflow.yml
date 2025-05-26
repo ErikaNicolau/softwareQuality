@@ -25,27 +25,17 @@ jobs:
       run: mvn -B clean package
       working-directory: Jabberpoint-IT-main
 
-    - name: List Surefire Reports Directory
-      run: dir target\surefire-reports
-      shell: pwsh
-      continue-on-error: true
-
-    - name: List JaCoCo Reports Directory
-      run: dir target\site\jacoco
-      shell: pwsh
-      continue-on-error: true
-
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: target/surefire-reports/
+        path: Jabberpoint-IT-main/target/surefire-reports/
     
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: target/site/jacoco/
+        path: Jabberpoint-IT-main/target/site/jacoco/
 
   deploy-development:
     needs: build-and-test
@@ -130,4 +120,4 @@ jobs:
         mvn -B clean package -Pprod
         New-Item -ItemType Directory -Path "D:\opt\jabberpoint\prod" -Force
         Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\prod\"
-      working-directory: Jabberpoint-IT-main 
+      working-directory: Jabberpoint-IT-main
