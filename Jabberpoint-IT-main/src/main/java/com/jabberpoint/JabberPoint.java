@@ -5,6 +5,10 @@ import com.jabberpoint.view.SlideViewerComponent;
 import com.jabberpoint.command.*;
 import com.jabberpoint.util.XMLAccessor;
 import com.jabberpoint.util.DemoPresentation;
+import com.jabberpoint.service.DialogService;
+import com.jabberpoint.service.FileService;
+import com.jabberpoint.service.swing.SwingDialogService;
+import com.jabberpoint.service.swing.SwingFileService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +50,12 @@ public class JabberPoint {
             
             Presentation presentation = DemoPresentation.createDemoPresentation();
             JFrame frame = createFrame(presentation);
-            setupKeyBindings(frame, presentation);
+            
+            DialogService dialogService = new SwingDialogService(frame);
+            FileService fileService = new SwingFileService(frame);
+
+            createMenuBar(frame, presentation, dialogService, fileService);
+            setupKeyBindings(frame, presentation, dialogService, fileService);
             
             // Ensure we start at the first slide
             presentation.goToSlide(0);
@@ -75,33 +84,81 @@ public class JabberPoint {
         scrollPane.getViewport().setBackground(Color.WHITE);
         
         frame.add(scrollPane);
-        createMenuBar(frame, presentation);
+        createMenuBar(frame, presentation, null, null); // Will be updated later
 
         return frame;
     }
 
-    private static void createMenuBar(JFrame frame, Presentation presentation) {
+    private static void createMenuBar(JFrame frame, Presentation presentation, DialogService dialogService, FileService fileService) {
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // Add some padding
 
         JMenu fileMenu = new JMenu("File");
-        fileMenu.add(createMenuItem("New", new NewCommand(presentation, frame)));
-        fileMenu.add(createMenuItem("Open", new OpenCommand(presentation, frame)));
-        fileMenu.add(createMenuItem("Save", new SaveCommand(presentation, frame)));
+        fileMenu.add(createMenuItem("New", new NewCommand(presentation, dialogService)));
+        fileMenu.add(createMenuItem("Open", new OpenCommand(presentation, fileService, dialogService)));
+        fileMenu.add(createMenuItem("Save", new SaveCommand(presentation, fileService, dialogService)));
         fileMenu.addSeparator();
-        fileMenu.add(createMenuItem("Exit", new ExitCommand(frame, presentation)));
+        fileMenu.add(createMenuItem("Exit", new ExitCommand(frame, presentation, fileService, dialogService)));
 
         JMenu slideMenu = new JMenu("Slide");
-        slideMenu.add(createMenuItem("New Slide", new AddSlideCommand(presentation, frame)));
+        slideMenu.add(createMenuItem("New Slide", new AddSlideCommand(presentation, dialogService)));
         slideMenu.addSeparator();
         slideMenu.add(createMenuItem("Next", new NextSlideCommand(presentation)));
         slideMenu.add(createMenuItem("Previous", new PrevSlideCommand(presentation)));
-        slideMenu.add(createMenuItem("Go to...", new GotoCommand(presentation, frame)));
+
+        JMenuItem goToMenuItem = new JMenuItem("Go to...");
+        goToMenuItem.addActionListener(e -> {
+            String slideNumberStr = dialogService.showInputDialog("Go to slide number:");
+            if (slideNumberStr != null && !slideNumberStr.trim().isEmpty()) {
+                try {
+                    int slideNumber = Integer.parseInt(slideNumberStr) - 1; // Adjust for 0-based index
+                    new GotoCommand(presentation, slideNumber).execute(); // GotoCommand now takes presentation and slide number
+                } catch (NumberFormatException ex) {
+                    dialogService.showMessageDialog("Invalid slide number.");
+                }
+            }
+        });
+        slideMenu.add(goToMenuItem);
 
         JMenu editMenu = new JMenu("Edit");
-        editMenu.add(createMenuItem("Add Text", new AddTextCommand(presentation, frame)));
-        editMenu.add(createMenuItem("Add Image", new AddImageCommand(presentation, frame)));
-        editMenu.add(createMenuItem("Add Shape", new AddShapeCommand(presentation, frame)));
+        
+        JMenuItem addTextMenuItem = new JMenuItem("Add Text");
+        addTextMenuItem.addActionListener(e -> {
+            String text = dialogService.showInputDialog("Enter text content:");
+            if (text != null && !text.trim().isEmpty()) {
+                // For simplicity, hardcoding level, pos, size for now. A real UI would gather this more robustly.
+                // A more advanced UI layer would present a dialog with fields for all parameters.
+                new AddTextCommand(presentation, dialogService, text.trim(), 1, 50, 50, 24).execute();
+            }
+        });
+        editMenu.add(addTextMenuItem);
+
+        JMenuItem addImageMenuItem = new JMenuItem("Add Image");
+        addImageMenuItem.addActionListener(e -> {
+            String imagePath = fileService.getFilePathToOpen();
+            if (imagePath != null) {
+                // For simplicity, hardcoding level, pos, size for now. A real UI would gather this.
+                // A more advanced UI layer would present a dialog with fields for all parameters.
+                 new AddImageCommand(presentation, dialogService, imagePath, 50, 50, 400, 300).execute();
+            }
+        });
+        editMenu.add(addImageMenuItem);
+
+        JMenuItem addShapeMenuItem = new JMenuItem("Add Shape");
+         addShapeMenuItem.addActionListener(e -> {
+             String shapeType = dialogService.showInputDialog("Enter shape type (Rectangle, Oval, Line):");
+             if (shapeType != null && !shapeType.trim().isEmpty()) {
+                 // For simplicity, hardcoding color, level, pos, size for now. A real UI would gather this.
+                 // A more advanced UI layer would present a dialog with fields for all parameters.
+                 try {
+                     // Default color to black for simplicity in this basic input dialog
+                     new AddShapeCommand(presentation, dialogService, shapeType.trim(), Color.BLACK, 50, 50, 100, 100).execute();
+                 } catch (IllegalArgumentException ex) {
+                     dialogService.showMessageDialog("Error creating shape: " + ex.getMessage());
+                 }
+             }
+         });
+        editMenu.add(addShapeMenuItem);
 
         menuBar.add(fileMenu);
         menuBar.add(slideMenu);
@@ -115,7 +172,7 @@ public class JabberPoint {
         return menuItem;
     }
 
-    private static void setupKeyBindings(JFrame frame, Presentation presentation) {
+    private static void setupKeyBindings(JFrame frame, Presentation presentation, DialogService dialogService, FileService fileService) {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -125,7 +182,7 @@ public class JabberPoint {
                     case KeyEvent.VK_PAGE_UP, KeyEvent.VK_LEFT, KeyEvent.VK_MINUS ->
                         new PrevSlideCommand(presentation).execute();
                     case KeyEvent.VK_ESCAPE ->
-                        new ExitCommand(frame, presentation).execute();
+                        new ExitCommand(frame, presentation, fileService, dialogService).execute();
                 }
             }
         });

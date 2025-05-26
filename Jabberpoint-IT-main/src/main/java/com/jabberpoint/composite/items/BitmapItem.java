@@ -58,6 +58,9 @@ public class BitmapItem extends SlideItem {
 
     @Override
     public void setPosition(int x, int y) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Position coordinates cannot be negative.");
+        }
         super.setPosition(x, y);
         Rectangle bounds = getBoundingBox();
         bounds.x = x;
@@ -66,6 +69,9 @@ public class BitmapItem extends SlideItem {
 
     @Override
     public void setSize(int width, int height) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Dimensions must be positive.");
+        }
         super.setSize(width, height);
         Rectangle bounds = getBoundingBox();
         bounds.width = width;

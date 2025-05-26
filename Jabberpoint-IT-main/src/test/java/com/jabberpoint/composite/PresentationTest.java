@@ -182,4 +182,65 @@ class PresentationTest {
         presentation.nextSlide();
         assertEquals("Slide 2", presentation.getCurrentSlide().getTitle());
     }
+
+    @Test
+    void testSetTitle() {
+        presentation.setTitle("New Title");
+        assertEquals("New Title", presentation.getTitle());
+        assertTrue(presentation.hasUnsavedChanges());
+    }
+
+    @Test
+    void testMarkAsChanged() {
+        presentation.markAsChanged();
+        assertTrue(presentation.hasUnsavedChanges());
+    }
+
+    @Test
+    void testMarkAsSaved() {
+        presentation.markAsChanged(); // First, mark as changed
+        presentation.markAsSaved("testfile.xml");
+        assertFalse(presentation.hasUnsavedChanges());
+        assertEquals("testfile.xml", presentation.getCurrentFileName());
+    }
+
+    @Test
+    void testInitialState() {
+        assertEquals("", presentation.getTitle());
+        assertEquals(0, presentation.getTotalSlides());
+        assertEquals(0, presentation.getCurrentSlideNumber());
+        assertNull(presentation.getCurrentSlide());
+        assertFalse(presentation.hasUnsavedChanges());
+        assertNull(presentation.getCurrentFileName());
+    }
+
+    @Test
+    void testGetCurrentSlideWhenEmpty() {
+        assertNull(presentation.getCurrentSlide());
+    }
+
+    @Test
+    void testGoToSlideNegative() {
+        Slide slide = new Slide();
+        presentation.append(slide);
+        presentation.goToSlide(-1);
+        assertEquals(0, presentation.getCurrentSlideNumber()); // Should remain at the current slide
+    }
+
+    @Test
+    void testAddAndRemoveObserver() {
+        List<Boolean> testObserverCalled = new ArrayList<>();
+        SlideObserver testObserver = slide -> testObserverCalled.add(true);
+
+        presentation.addObserver(testObserver);
+        Slide slide = new Slide();
+        presentation.append(slide);
+        assertTrue(testObserverCalled.get(0));
+
+        testObserverCalled.clear();
+        presentation.removeObserver(testObserver);
+        Slide slide2 = new Slide();
+        presentation.append(slide2);
+        assertTrue(testObserverCalled.isEmpty()); // Observer should not be called after removal
+    }
 } 

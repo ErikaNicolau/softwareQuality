@@ -24,6 +24,10 @@ D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\fa
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\factory\TextDrawer.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\JabberPoint.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\observer\SlideObserver.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\service\DialogService.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\service\FileService.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\service\swing\SwingDialogService.java
+D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\service\swing\SwingFileService.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\util\Constants.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\util\DemoPresentation.java
 D:\Software\softwareQuality\Jabberpoint-IT-main\src\main\java\com\jabberpoint\util\XMLAccessor.java

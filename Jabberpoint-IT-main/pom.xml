@@ -85,8 +85,6 @@
                 <version>3.2.5</version>
                 <configuration>
                     <excludes>
-                        <exclude>com.jabberpoint.command.AddSlideCommandTest</exclude>
-                        <exclude>com.jabberpoint.command.NewCommandTest</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <java.awt.headless>true</java.awt.headless>

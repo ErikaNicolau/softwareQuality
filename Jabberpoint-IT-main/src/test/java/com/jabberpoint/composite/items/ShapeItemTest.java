@@ -96,7 +96,7 @@ class ShapeItemTest {
 
     @Test
     void testGetContent() {
-        assertEquals("", shapeItem.getContent());
+        assertEquals(SHAPE_TYPE + " " + SHAPE_COLOR.toString(), shapeItem.getContent());
     }
 
     @Test

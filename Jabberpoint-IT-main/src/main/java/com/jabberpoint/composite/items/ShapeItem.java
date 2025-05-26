@@ -16,6 +16,17 @@ public class ShapeItem extends SlideItem {
 
     public ShapeItem(int level, String shapeType, Color color) {
         super(level);
+        if (shapeType == null || shapeType.trim().isEmpty()) {
+            throw new IllegalArgumentException("Shape type cannot be null or empty.");
+        }
+        // Validate shape type against supported types
+        String lowerShapeType = shapeType.toLowerCase();
+        if (!lowerShapeType.equals("rectangle") && !lowerShapeType.equals("oval") && !lowerShapeType.equals("line")) {
+             throw new IllegalArgumentException("Invalid shape type: " + shapeType + ". Supported types are Rectangle, Oval, Line.");
+        }
+        if (color == null) {
+            throw new IllegalArgumentException("Color cannot be null.");
+        }
         this.shapeType = shapeType;
         this.color = color;
         this.defaultBounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -42,6 +53,12 @@ public class ShapeItem extends SlideItem {
 
     @Override
     public void draw(Graphics g, int x, int y, float scale, ImageObserver observer) {
+        if (g == null) {
+             throw new IllegalArgumentException("Graphics object cannot be null.");
+        }
+        if (scale <= 0) {
+             throw new IllegalArgumentException("Scale must be positive.");
+        }
         Rectangle bounds = getBoundingBox();
         int drawX = hasCustomPosition ? bounds.x : x;
         int drawY = hasCustomPosition ? bounds.y : y;
@@ -65,5 +82,21 @@ public class ShapeItem extends SlideItem {
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(x, y, width, height);
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Position coordinates cannot be negative.");
+        }
+        super.setPosition(x, y);
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Dimensions must be positive.");
+        }
+        super.setSize(width, height);
     }
 } 

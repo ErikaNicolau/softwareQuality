@@ -5,14 +5,18 @@ import com.jabberpoint.composite.Slide;
 import com.jabberpoint.composite.items.TextItem;
 import com.jabberpoint.composite.items.BitmapItem;
 import com.jabberpoint.composite.items.ShapeItem;
+import com.jabberpoint.composite.items.SlideItem;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -131,7 +135,7 @@ class XMLAccessorTest {
 
     @Test
     void loadSlideItem_shouldLoadShapeItemWithLevelKindColorAndPosition() throws Exception {
-        String xmlSnippet = "<item kind=\"shape\" level=\"1\" shapeType=\"circle\" color=\"#FF0000\" x=\"10\" y=\"20\" width=\"50\" height=\"50\">Shape Content</item>";
+        String xmlSnippet = "<item kind=\"shape\" level=\"1\" shapeType=\"rectangle\" color=\"#FF0000\" x=\"10\" y=\"20\" width=\"50\" height=\"50\">Shape Content</item>";
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newInstance().newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xmlSnippet));
@@ -154,7 +158,7 @@ class XMLAccessorTest {
         XMLAccessor accessor = new XMLAccessor();
         TextItem textItem = new TextItem(1, "");
         BitmapItem bitmapItem = new BitmapItem(1, "");
-        ShapeItem shapeItem = new ShapeItem(1, "circle", java.awt.Color.RED);
+        ShapeItem shapeItem = new ShapeItem(1, "rectangle", java.awt.Color.RED);
 
         assertEquals("text", accessor.getItemType(textItem));
         assertEquals("image", accessor.getItemType(bitmapItem));
@@ -244,9 +248,12 @@ class XMLAccessorTest {
         Method method = XMLAccessor.class.getDeclaredMethod("loadSlideItem", Slide.class, Element.class);
         method.setAccessible(true);
 
-        method.invoke(accessor, mockSlide, itemElement);
-
-        Mockito.verify(mockSlide, Mockito.times(1)).append(Mockito.any(TextItem.class));
+        InvocationTargetException exception = assertThrows(InvocationTargetException.class, () ->
+            method.invoke(accessor, mockSlide, itemElement)
+        );
+        Throwable cause = exception.getCause();
+        assertTrue(cause instanceof IllegalArgumentException);
+        assertNull(cause.getCause());
     }
 
     @Test
@@ -286,8 +293,12 @@ class XMLAccessorTest {
         Method method = XMLAccessor.class.getDeclaredMethod("loadSlideItem", Slide.class, Element.class);
         method.setAccessible(true);
 
-        assertThrows(NumberFormatException.class, () -> 
+        InvocationTargetException exception = assertThrows(InvocationTargetException.class, () ->
             method.invoke(accessor, mockSlide, itemElement)
         );
+        Throwable cause = exception.getCause();
+        assertTrue(cause instanceof IllegalArgumentException);
+        IllegalArgumentException illegalArgumentException = (IllegalArgumentException) cause;
+        assertTrue(illegalArgumentException.getCause() instanceof NumberFormatException);
     }
 } 

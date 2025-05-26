@@ -2,6 +2,8 @@ package com.jabberpoint.command;
 
 import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.util.XMLAccessor;
+import com.jabberpoint.service.FileService;
+import com.jabberpoint.service.DialogService;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -9,11 +11,13 @@ import java.io.IOException;
 
 public class SaveCommand implements Command {
     private final Presentation presentation;
-    private final JFrame frame;
+    private final FileService fileService;
+    private final DialogService dialogService;
 
-    public SaveCommand(Presentation presentation, JFrame frame) {
+    public SaveCommand(Presentation presentation, FileService fileService, DialogService dialogService) {
         this.presentation = presentation;
-        this.frame = frame;
+        this.fileService = fileService;
+        this.dialogService = dialogService;
     }
 
     @Override
@@ -21,16 +25,12 @@ public class SaveCommand implements Command {
         String filename = presentation.getCurrentFileName();
         
         if (filename == null) {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Save Presentation");
-            
-            if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
-                filename = fileChooser.getSelectedFile().getAbsolutePath();
-                if (!filename.endsWith(".xml")) {
-                    filename += ".xml";
-                }
-            } else {
+            filename = fileService.getFilePathToSave();
+            if (filename == null) {
                 return;
+            }
+            if (!filename.endsWith(".xml")) {
+                filename += ".xml";
             }
         }
         
@@ -38,9 +38,9 @@ public class SaveCommand implements Command {
             XMLAccessor xmlAccessor = new XMLAccessor();
             xmlAccessor.saveFile(presentation, filename);
             presentation.markAsSaved(filename);
-            JOptionPane.showMessageDialog(frame, "Presentation saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            dialogService.showMessageDialog("Presentation saved successfully!");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Error saving presentation: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            dialogService.showMessageDialog("Error saving presentation: " + e.getMessage());
         }
     }
 } 
