@@ -23,6 +23,7 @@ jobs:
     
     - name: Build and Test
       run: mvn -B clean package
+      working-directory: Jabberpoint-IT-main
 
     - name: List Surefire Reports Directory
       run: dir target\surefire-reports
@@ -65,6 +66,7 @@ jobs:
         mvn -B clean package -Pdev
         New-Item -ItemType Directory -Path "D:\opt\jabberpoint\dev" -Force
         Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\dev\"
+      working-directory: Jabberpoint-IT-main
 
   deploy-testing:
     needs: deploy-development
@@ -86,6 +88,7 @@ jobs:
         mvn verify -Ptest
         New-Item -ItemType Directory -Path "D:\opt\jabberpoint\test" -Force
         Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\test\"
+      working-directory: Jabberpoint-IT-main
 
   deploy-acceptance:
     needs: deploy-testing
@@ -106,6 +109,7 @@ jobs:
         mvn -B clean package -Pacc
         New-Item -ItemType Directory -Path "D:\opt\jabberpoint\acc" -Force
         Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\acc\"
+      working-directory: Jabberpoint-IT-main
 
   deploy-production:
     needs: deploy-acceptance
@@ -125,4 +129,5 @@ jobs:
       run: |
         mvn -B clean package -Pprod
         New-Item -ItemType Directory -Path "D:\opt\jabberpoint\prod" -Force
-        Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\prod\" 
+        Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\prod\"
+      working-directory: Jabberpoint-IT-main 
