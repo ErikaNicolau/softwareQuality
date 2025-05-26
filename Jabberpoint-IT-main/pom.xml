@@ -88,7 +88,7 @@
                         <java.awt.headless>true</java.awt.headless>
                         <spring.profiles.active>${spring.profiles.active}</spring.profiles.active>
                     </systemPropertyVariables>
-                    <argLine>-Djava.awt.headless=true</argLine>
+                    <argLine>${argLine}</argLine>
                 </configuration>
             </plugin>
             <plugin>
