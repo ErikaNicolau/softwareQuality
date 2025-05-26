@@ -8,6 +8,14 @@ public class ExitCommand implements Command {
     private final JFrame frame;
     private final Presentation presentation;
 
+    // Flag to indicate if System.exit(0) should be skipped (for testing)
+    private static boolean skipSystemExit = false;
+
+    // Method for tests to set the skip flag
+    public static void setSkipSystemExit(boolean skip) {
+        skipSystemExit = skip;
+    }
+
     public ExitCommand(JFrame frame, Presentation presentation) {
         this.frame = frame;
         this.presentation = presentation;
@@ -32,6 +40,8 @@ public class ExitCommand implements Command {
         }
         
         frame.dispose();
-        System.exit(0);
+        if (!skipSystemExit) {
+            System.exit(0);
+        }
     }
 } 

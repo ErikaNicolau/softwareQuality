@@ -3,6 +3,7 @@ package com.jabberpoint.command;
 import com.jabberpoint.composite.Presentation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import javax.swing.JFrame;
 
 import static org.mockito.Mockito.*;
@@ -16,6 +17,14 @@ class ExitCommandTest {
     void setUp() {
         mockFrame = mock(JFrame.class);
         mockPresentation = mock(Presentation.class);
+        // Set the flag to skip System.exit(0) during tests
+        ExitCommand.setSkipSystemExit(true);
+    }
+
+    // After each test, reset the flag
+    @AfterEach
+    void tearDown() {
+        ExitCommand.setSkipSystemExit(false);
     }
 
     @Test
@@ -30,8 +39,7 @@ class ExitCommandTest {
         // Assert
         verify(mockPresentation, times(1)).hasUnsavedChanges();
         verify(mockFrame, times(1)).dispose();
-        // Note: Cannot directly test System.exit(0) with standard unit tests.
-        // Special techniques (e.g., SecurityManager) are required.
+        // No need to test System.exit(0) directly as it's skipped
     }
 
     // Outlined tests for scenarios involving JOptionPane (require static mocking)
