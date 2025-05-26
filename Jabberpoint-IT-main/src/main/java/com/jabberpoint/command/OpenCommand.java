@@ -2,32 +2,31 @@ package com.jabberpoint.command;
 
 import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.util.XMLAccessor;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import com.jabberpoint.service.FileService;
+import com.jabberpoint.service.DialogService;
 import java.io.IOException;
 
 public class OpenCommand implements Command {
     private final Presentation presentation;
-    private final JFrame frame;
+    private final FileService fileService;
+    private final DialogService dialogService;
 
-    public OpenCommand(Presentation presentation, JFrame frame) {
+    public OpenCommand(Presentation presentation, FileService fileService, DialogService dialogService) {
         this.presentation = presentation;
-        this.frame = frame;
+        this.fileService = fileService;
+        this.dialogService = dialogService;
     }
 
     @Override
     public void execute() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Open Presentation");
-        
-        if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+        String filePath = fileService.getFilePathToOpen();
+        if (filePath != null) {
             try {
                 XMLAccessor xmlAccessor = new XMLAccessor();
-                xmlAccessor.loadFile(presentation, fileChooser.getSelectedFile().getPath());
-                JOptionPane.showMessageDialog(frame, "Presentation loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                xmlAccessor.loadFile(presentation, filePath);
+                dialogService.showMessageDialog("Presentation loaded successfully!");
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(frame, "Error loading presentation: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                dialogService.showMessageDialog("Error loading presentation: " + e.getMessage());
             }
         }
     }

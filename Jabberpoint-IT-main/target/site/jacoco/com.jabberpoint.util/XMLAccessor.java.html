@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XMLAccessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.util</a> &gt; <span class="el_source">XMLAccessor.java</span></div><h1>XMLAccessor.java</h1><pre class="source lang-java linenums">package com.jabberpoint.util;
+
+import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.composite.Slide;
+import com.jabberpoint.composite.items.BitmapItem;
+import com.jabberpoint.composite.items.TextItem;
+import com.jabberpoint.composite.items.SlideItem;
+import com.jabberpoint.composite.items.ShapeItem;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.awt.Color;
+import java.awt.Rectangle;
+
+
+<span class="fc" id="L30">public class XMLAccessor {</span>
+    private static final String PRESENTATION_TAG = &quot;presentation&quot;;
+    private static final String SHOW_TITLE_TAG = &quot;showtitle&quot;;
+    private static final String SLIDE_TAG = &quot;slide&quot;;
+    private static final String SLIDE_TITLE_TAG = &quot;title&quot;;
+    private static final String ITEM_TAG = &quot;item&quot;;
+    private static final String ITEM_KIND_ATTRIBUTE = &quot;kind&quot;;
+    private static final String ITEM_LEVEL_ATTRIBUTE = &quot;level&quot;;
+    private static final String ITEM_X_ATTRIBUTE = &quot;x&quot;;
+    private static final String ITEM_Y_ATTRIBUTE = &quot;y&quot;;
+    private static final String ITEM_WIDTH_ATTRIBUTE = &quot;width&quot;;
+    private static final String ITEM_HEIGHT_ATTRIBUTE = &quot;height&quot;;
+    private static final String ITEM_COLOR_ATTRIBUTE = &quot;color&quot;;
+    private static final String ITEM_SHAPE_TYPE_ATTRIBUTE = &quot;shapeType&quot;;
+    private static final String ITEM_FONT_SIZE_ATTRIBUTE = &quot;fontSize&quot;;
+
+    public void loadFile(Presentation presentation, String filename) throws IOException {
+        try {
+<span class="fc" id="L48">            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();</span>
+<span class="fc" id="L49">            Document document = builder.parse(new File(filename));</span>
+<span class="fc" id="L50">            Element doc = document.getDocumentElement();</span>
+<span class="fc" id="L51">            presentation.setTitle(getElementText(doc, SHOW_TITLE_TAG));</span>
+
+<span class="fc" id="L53">            NodeList slides = doc.getElementsByTagName(SLIDE_TAG);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            for (int slideNumber = 0; slideNumber &lt; slides.getLength(); slideNumber++) {</span>
+<span class="fc" id="L55">                Element xmlSlide = (Element) slides.item(slideNumber);</span>
+<span class="fc" id="L56">                Slide slide = new Slide();</span>
+<span class="fc" id="L57">                slide.setTitle(getElementText(xmlSlide, SLIDE_TITLE_TAG));</span>
+<span class="fc" id="L58">                presentation.append(slide);</span>
+
+<span class="fc" id="L60">                NodeList slideItems = xmlSlide.getElementsByTagName(ITEM_TAG);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                for (int itemNumber = 0; itemNumber &lt; slideItems.getLength(); itemNumber++) {</span>
+<span class="fc" id="L62">                    Element item = (Element) slideItems.item(itemNumber);</span>
+<span class="fc" id="L63">                    loadSlideItem(slide, item);</span>
+                }
+            }
+<span class="fc" id="L66">        } catch (ParserConfigurationException | SAXException e) {</span>
+<span class="fc" id="L67">            throw new IOException(&quot;Error loading presentation: &quot; + e.getMessage());</span>
+<span class="fc" id="L68">        }</span>
+<span class="fc" id="L69">    }</span>
+
+    public void saveFile(Presentation presentation, String filename) throws IOException {
+        try {
+<span class="fc" id="L73">            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();</span>
+<span class="fc" id="L74">            Document document = builder.newDocument();</span>
+<span class="fc" id="L75">            Element doc = document.createElement(PRESENTATION_TAG);</span>
+<span class="fc" id="L76">            document.appendChild(doc);</span>
+
+<span class="fc" id="L78">            Element showTitle = document.createElement(SHOW_TITLE_TAG);</span>
+<span class="fc" id="L79">            showTitle.appendChild(document.createTextNode(presentation.getTitle()));</span>
+<span class="fc" id="L80">            doc.appendChild(showTitle);</span>
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            for (int slideNumber = 0; slideNumber &lt; presentation.getTotalSlides(); slideNumber++) {</span>
+<span class="fc" id="L83">                Slide slide = presentation.getCurrentSlide();</span>
+<span class="fc" id="L84">                Element xmlSlide = document.createElement(SLIDE_TAG);</span>
+<span class="fc" id="L85">                doc.appendChild(xmlSlide);</span>
+
+<span class="fc" id="L87">                Element title = document.createElement(SLIDE_TITLE_TAG);</span>
+<span class="fc" id="L88">                title.appendChild(document.createTextNode(slide.getTitle()));</span>
+<span class="fc" id="L89">                xmlSlide.appendChild(title);</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">                for (SlideItem item : slide.getItems()) {</span>
+<span class="fc" id="L92">                    Element xmlItem = document.createElement(ITEM_TAG);</span>
+<span class="fc" id="L93">                    xmlItem.setAttribute(ITEM_KIND_ATTRIBUTE, getItemType(item));</span>
+<span class="fc" id="L94">                    xmlItem.setAttribute(ITEM_LEVEL_ATTRIBUTE, String.valueOf(item.getLevel()));</span>
+<span class="fc" id="L95">                    xmlItem.appendChild(document.createTextNode(item.getContent()));</span>
+
+                    // Save position
+<span class="fc" id="L98">                    Rectangle bounds = item.getBoundingBox();</span>
+<span class="fc" id="L99">                    xmlItem.setAttribute(ITEM_X_ATTRIBUTE, String.valueOf(bounds.x));</span>
+<span class="fc" id="L100">                    xmlItem.setAttribute(ITEM_Y_ATTRIBUTE, String.valueOf(bounds.y));</span>
+<span class="fc" id="L101">                    xmlItem.setAttribute(ITEM_WIDTH_ATTRIBUTE, String.valueOf(bounds.width));</span>
+<span class="fc" id="L102">                    xmlItem.setAttribute(ITEM_HEIGHT_ATTRIBUTE, String.valueOf(bounds.height));</span>
+
+                    // Save additional properties based on item type
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">                    if (item instanceof TextItem) {</span>
+<span class="fc" id="L106">                        xmlItem.setAttribute(ITEM_FONT_SIZE_ATTRIBUTE, String.valueOf(((TextItem) item).getFontSize()));</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                    } else if (item instanceof ShapeItem) {</span>
+<span class="nc" id="L108">                        xmlItem.setAttribute(ITEM_SHAPE_TYPE_ATTRIBUTE, ((ShapeItem) item).getShapeType());</span>
+<span class="nc" id="L109">                        xmlItem.setAttribute(ITEM_COLOR_ATTRIBUTE, String.valueOf(((ShapeItem) item).getColor().getRGB()));</span>
+                    }
+
+<span class="fc" id="L112">                    xmlSlide.appendChild(xmlItem);</span>
+<span class="fc" id="L113">                }</span>
+            }
+
+<span class="fc" id="L116">            Transformer transformer = TransformerFactory.newInstance().newTransformer();</span>
+<span class="fc" id="L117">            transformer.transform(new DOMSource(document), new StreamResult(new File(filename)));</span>
+<span class="nc" id="L118">        } catch (Exception e) {</span>
+<span class="nc" id="L119">            throw new IOException(&quot;Error saving presentation: &quot; + e.getMessage());</span>
+<span class="fc" id="L120">        }</span>
+<span class="fc" id="L121">    }</span>
+
+    private void loadSlideItem(Slide slide, Element item) {
+<span class="fc" id="L124">        String kind = item.getAttribute(ITEM_KIND_ATTRIBUTE);</span>
+<span class="pc bpc" id="L125" title="2 of 4 branches missed.">        if (kind == null || kind.trim().isEmpty()) {</span>
+<span class="nc" id="L126">            throw new IllegalArgumentException(&quot;Item 'kind' attribute is missing or empty.&quot;);</span>
+        }
+
+        int level;
+<span class="fc" id="L130">        String levelStr = item.getAttribute(ITEM_LEVEL_ATTRIBUTE);</span>
+<span class="pc bpc" id="L131" title="1 of 4 branches missed.">        if (levelStr == null || levelStr.trim().isEmpty()) {</span>
+<span class="fc" id="L132">             throw new IllegalArgumentException(&quot;Item 'level' attribute is missing or empty.&quot;);</span>
+        }
+        try {
+<span class="fc" id="L135">            level = Integer.parseInt(levelStr);</span>
+<span class="fc" id="L136">        } catch (NumberFormatException e) {</span>
+<span class="fc" id="L137">            throw new IllegalArgumentException(&quot;Invalid value for item 'level' attribute: &quot; + levelStr, e);</span>
+<span class="fc" id="L138">        }</span>
+
+<span class="fc" id="L140">        String content = item.getTextContent();</span>
+        
+<span class="fc" id="L142">        SlideItem slideItem = null;</span>
+        
+<span class="pc bpc" id="L144" title="1 of 4 branches missed.">        switch (kind) {</span>
+            case &quot;text&quot;:
+<span class="fc" id="L146">                slideItem = new TextItem(level, content);</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">                if (item.hasAttribute(ITEM_FONT_SIZE_ATTRIBUTE)) {</span>
+<span class="nc" id="L148">                    ((TextItem) slideItem).setFontSize(Integer.parseInt(item.getAttribute(ITEM_FONT_SIZE_ATTRIBUTE)));</span>
+                }
+                break;
+            case &quot;image&quot;:
+<span class="fc" id="L152">                slideItem = new BitmapItem(level, content);</span>
+<span class="fc" id="L153">                break;</span>
+            case &quot;shape&quot;:
+<span class="fc" id="L155">                String shapeType = item.getAttribute(ITEM_SHAPE_TYPE_ATTRIBUTE);</span>
+<span class="fc" id="L156">                String colorStr = item.getAttribute(ITEM_COLOR_ATTRIBUTE);</span>
+                Color color;
+                 try {
+<span class="fc" id="L159">                    color = Color.decode(colorStr);</span>
+<span class="nc" id="L160">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L161">                    throw new IllegalArgumentException(&quot;Invalid value for shape 'color' attribute: &quot; + colorStr, e);</span>
+<span class="fc" id="L162">                }</span>
+
+<span class="fc" id="L164">                slideItem = new ShapeItem(level, shapeType, color);</span>
+<span class="fc" id="L165">                break;</span>
+            default:
+<span class="nc" id="L167">                throw new IllegalArgumentException(&quot;Unknown item kind: &quot; + kind);</span>
+        }
+
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        if (slideItem != null) {</span>
+<span class="pc bpc" id="L171" title="1 of 4 branches missed.">            if (item.hasAttribute(ITEM_X_ATTRIBUTE) &amp;&amp; item.hasAttribute(ITEM_Y_ATTRIBUTE)) {</span>
+<span class="fc" id="L172">                int x = Integer.parseInt(item.getAttribute(ITEM_X_ATTRIBUTE));</span>
+<span class="fc" id="L173">                int y = Integer.parseInt(item.getAttribute(ITEM_Y_ATTRIBUTE));</span>
+<span class="fc" id="L174">                slideItem.setPosition(x, y);</span>
+            }
+            
+<span class="pc bpc" id="L177" title="1 of 4 branches missed.">            if (item.hasAttribute(ITEM_WIDTH_ATTRIBUTE) &amp;&amp; item.hasAttribute(ITEM_HEIGHT_ATTRIBUTE)) {</span>
+<span class="fc" id="L178">                int width = Integer.parseInt(item.getAttribute(ITEM_WIDTH_ATTRIBUTE));</span>
+<span class="fc" id="L179">                int height = Integer.parseInt(item.getAttribute(ITEM_HEIGHT_ATTRIBUTE));</span>
+<span class="fc" id="L180">                slideItem.setSize(width, height);</span>
+            }
+            
+<span class="fc" id="L183">            slide.append(slideItem);</span>
+        }
+<span class="fc" id="L185">    }</span>
+
+    String getItemType(SlideItem item) {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (item instanceof TextItem) return &quot;text&quot;;</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (item instanceof BitmapItem) return &quot;image&quot;;</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (item instanceof ShapeItem) return &quot;shape&quot;;</span>
+<span class="fc" id="L191">        return &quot;unknown&quot;;</span>
+    }
+
+    private String getElementText(Element element, String tagName) {
+<span class="fc" id="L195">        NodeList nodes = element.getElementsByTagName(tagName);</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        if (nodes.getLength() &gt; 0) {</span>
+<span class="fc" id="L197">            return nodes.item(0).getTextContent();</span>
+        }
+<span class="fc" id="L199">        return &quot;&quot;;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

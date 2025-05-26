@@ -7,10 +7,9 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import com.jabberpoint.util.Constants;
 
 public class BitmapItem extends SlideItem {
-    private static final int DEFAULT_WIDTH = 400;
-    private static final int DEFAULT_HEIGHT = 300;
     private Image image;
     private String imageName;
     private Rectangle defaultBounds;
@@ -19,7 +18,7 @@ public class BitmapItem extends SlideItem {
     public BitmapItem(int level, String name) {
         super(level);
         this.imageName = name;
-        this.defaultBounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.defaultBounds = new Rectangle(0, 0, Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);
         loadImage();
     }
 
@@ -32,8 +31,8 @@ public class BitmapItem extends SlideItem {
                 int imgHeight = image.getHeight(null);
                 double aspectRatio = (double) imgWidth / imgHeight;
                 
-                int scaledWidth = DEFAULT_WIDTH;
-                int scaledHeight = (int) (DEFAULT_WIDTH / aspectRatio);
+                int scaledWidth = Constants.DEFAULT_WIDTH;
+                int scaledHeight = (int) (Constants.DEFAULT_WIDTH / aspectRatio);
                 
                 // Update default bounds based on scaled dimensions
                 defaultBounds = new Rectangle(0, 0, scaledWidth, scaledHeight);
@@ -42,7 +41,7 @@ public class BitmapItem extends SlideItem {
             System.err.println("Error loading image: " + imageName);
             image = null;
             // Use default dimensions for error case
-            defaultBounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            defaultBounds = new Rectangle(0, 0, Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);
         }
     }
 
@@ -58,6 +57,9 @@ public class BitmapItem extends SlideItem {
 
     @Override
     public void setPosition(int x, int y) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Position coordinates cannot be negative.");
+        }
         super.setPosition(x, y);
         Rectangle bounds = getBoundingBox();
         bounds.x = x;
@@ -66,6 +68,9 @@ public class BitmapItem extends SlideItem {
 
     @Override
     public void setSize(int width, int height) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Dimensions must be positive.");
+        }
         super.setSize(width, height);
         Rectangle bounds = getBoundingBox();
         bounds.width = width;

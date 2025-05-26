@@ -1,16 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<presentation>
-    <title>Sample Presentation</title>
-    <slide>
-        <title>Welcome to JabberPoint</title>
-        <item kind="text" level="1">Welcome to JabberPoint</item>
-        <item kind="text" level="2">A simple presentation tool</item>
-    </slide>
-    <slide>
-        <title>Features</title>
-        <item kind="text" level="1">Key Features:</item>
-        <item kind="text" level="2">- Text and Image Support</item>
-        <item kind="text" level="2">- Keyboard Navigation</item>
-        <item kind="text" level="2">- Menu Controls</item>
-    </slide>
-</presentation> 
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><presentation><showtitle/></presentation>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TextItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.composite.items</a> &gt; <span class="el_source">TextItem.java</span></div><h1>TextItem.java</h1><pre class="source lang-java linenums">package com.jabberpoint.composite.items;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.image.ImageObserver;
+import com.jabberpoint.util.Constants;
+
+public class TextItem extends SlideItem {
+    private String text;
+    private int fontSize;
+
+    public TextItem() {
+<span class="nc" id="L16">        this(Constants.DEFAULT_LEVEL, Constants.DEFAULT_TEXT);</span>
+<span class="nc" id="L17">    }</span>
+
+    public TextItem(int level, String text) {
+<span class="fc" id="L20">        super(level);</span>
+<span class="fc" id="L21">        this.text = text;</span>
+<span class="fc" id="L22">        this.fontSize = Constants.DEFAULT_FONT_SIZE;</span>
+<span class="fc" id="L23">    }</span>
+
+    public void setFontSize(int fontSize) {
+<span class="fc" id="L26">        this.fontSize = fontSize;</span>
+<span class="fc" id="L27">    }</span>
+
+    public int getFontSize() {
+<span class="fc" id="L30">        return fontSize;</span>
+    }
+
+    @Override
+    public String getContent() {
+<span class="fc" id="L35">        return text;</span>
+    }
+
+    @Override
+    protected Rectangle getDefaultBoundingBox() {
+<span class="nc" id="L40">        return new Rectangle(0, 0, 0, 0); // Will be calculated in draw method</span>
+    }
+
+    @Override
+    public void draw(Graphics g, int x, int y, float scale, ImageObserver observer) {
+<span class="fc" id="L45">        Font font = new Font(Constants.FONT_NAME, Constants.FONT_STYLE, (int) (fontSize * scale));</span>
+<span class="fc" id="L46">        g.setFont(font);</span>
+<span class="fc" id="L47">        FontMetrics metrics = g.getFontMetrics(font);</span>
+        
+<span class="fc" id="L49">        Rectangle bounds = getBoundingBox();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        int drawX = hasCustomPosition ? bounds.x : x;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        int drawY = hasCustomPosition ? bounds.y : y;</span>
+        
+<span class="fc" id="L53">        g.setColor(Color.black);</span>
+<span class="fc" id="L54">        g.drawString(text, drawX, drawY + metrics.getAscent());</span>
+<span class="fc" id="L55">    }</span>
+
+    @Override
+    public Rectangle getBoundingBox() {
+        // Estimate bounds based on font size and text length
+<span class="fc" id="L60">        int estimatedWidth = (int) (text.length() * fontSize * 0.6); // Rough estimate</span>
+<span class="fc" id="L61">        int estimatedHeight = fontSize;</span>
+<span class="fc" id="L62">        return new Rectangle(x, y, estimatedWidth, estimatedHeight);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

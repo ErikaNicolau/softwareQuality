@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JabberPoint.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint</a> &gt; <span class="el_source">JabberPoint.java</span></div><h1>JabberPoint.java</h1><pre class="source lang-java linenums">package com.jabberpoint;
+
+import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.composite.items.BitmapItem;
+import com.jabberpoint.composite.items.ShapeItem;
+import com.jabberpoint.composite.items.TextItem;
+import com.jabberpoint.view.SlideViewerComponent;
+import com.jabberpoint.command.*;
+import com.jabberpoint.util.XMLAccessor;
+import com.jabberpoint.util.DemoPresentation;
+import com.jabberpoint.util.Constants;
+import com.jabberpoint.util.Position;
+import com.jabberpoint.service.DialogService;
+import com.jabberpoint.service.FileService;
+import com.jabberpoint.service.PositionDialog;
+import com.jabberpoint.service.swing.SwingDialogService;
+import com.jabberpoint.service.swing.SwingFileService;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
+import java.io.IOException;
+
+<span class="nc" id="L25">public class JabberPoint {</span>
+    private static final String WINDOW_TITLE = &quot;JabberPoint&quot;;
+    private static SlideViewerComponent slideViewer;
+
+    public static void main(String[] args) {
+<span class="nc" id="L30">        SwingUtilities.invokeLater(() -&gt; {</span>
+            try {
+<span class="nc" id="L32">                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());</span>
+<span class="nc" id="L33">            } catch (Exception e) {</span>
+<span class="nc" id="L34">                System.err.println(&quot;Could not set system look and feel: &quot; + e.getMessage());</span>
+<span class="nc" id="L35">            }</span>
+<span class="nc" id="L36">            Presentation presentation = DemoPresentation.createDemoPresentation();</span>
+<span class="nc" id="L37">            JFrame frame = createFrame(presentation);</span>
+<span class="nc" id="L38">            DialogService dialogService = new SwingDialogService(frame);</span>
+<span class="nc" id="L39">            FileService fileService = new SwingFileService(frame);</span>
+<span class="nc" id="L40">            createMenuBar(frame, presentation, dialogService, fileService);</span>
+<span class="nc" id="L41">            setupKeyBindings(frame, presentation, dialogService, fileService);</span>
+<span class="nc" id="L42">            presentation.goToSlide(0);</span>
+<span class="nc" id="L43">            frame.setLocationRelativeTo(null);</span>
+<span class="nc" id="L44">            frame.setVisible(true);</span>
+<span class="nc" id="L45">        });</span>
+<span class="nc" id="L46">    }</span>
+
+    private static JFrame createFrame(Presentation presentation) {
+<span class="nc" id="L49">        JFrame frame = new JFrame(WINDOW_TITLE);</span>
+<span class="nc" id="L50">        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L51">        frame.setSize(Constants.WIDTH, Constants.HEIGHT);</span>
+<span class="nc" id="L52">        frame.setMinimumSize(new Dimension(800, 600));</span>
+<span class="nc" id="L53">        slideViewer = new SlideViewerComponent(presentation, frame);</span>
+<span class="nc" id="L54">        slideViewer.setBackground(Color.WHITE);</span>
+<span class="nc" id="L55">        JScrollPane scrollPane = new JScrollPane(slideViewer);</span>
+<span class="nc" id="L56">        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);</span>
+<span class="nc" id="L57">        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);</span>
+<span class="nc" id="L58">        scrollPane.setBorder(BorderFactory.createEmptyBorder());</span>
+<span class="nc" id="L59">        scrollPane.getViewport().setBackground(Color.WHITE);</span>
+<span class="nc" id="L60">        frame.add(scrollPane);</span>
+<span class="nc" id="L61">        return frame;</span>
+    }
+
+    private static void createMenuBar(JFrame frame, Presentation presentation, DialogService dialogService, FileService fileService) {
+<span class="nc" id="L65">        JMenuBar menuBar = new JMenuBar();</span>
+<span class="nc" id="L66">        menuBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));</span>
+        
+<span class="nc" id="L68">        JMenu fileMenu = new JMenu(&quot;File&quot;);</span>
+<span class="nc" id="L69">        fileMenu.add(createMenuItem(&quot;New&quot;, new NewCommand(presentation, dialogService)));</span>
+<span class="nc" id="L70">        fileMenu.add(createMenuItem(&quot;Open&quot;, new OpenCommand(presentation, fileService, dialogService)));</span>
+<span class="nc" id="L71">        fileMenu.add(createMenuItem(&quot;Save&quot;, new SaveCommand(presentation, fileService, dialogService)));</span>
+<span class="nc" id="L72">        fileMenu.addSeparator();</span>
+<span class="nc" id="L73">        fileMenu.add(createMenuItem(&quot;Exit&quot;, new ExitCommand(frame, presentation, fileService, dialogService)));</span>
+        
+<span class="nc" id="L75">        JMenu slideMenu = new JMenu(&quot;Slide&quot;);</span>
+<span class="nc" id="L76">        slideMenu.add(createMenuItem(&quot;New Slide&quot;, new AddSlideCommand(presentation, dialogService)));</span>
+<span class="nc" id="L77">        slideMenu.addSeparator();</span>
+<span class="nc" id="L78">        slideMenu.add(createMenuItem(&quot;Next&quot;, new NextSlideCommand(presentation)));</span>
+<span class="nc" id="L79">        slideMenu.add(createMenuItem(&quot;Previous&quot;, new PrevSlideCommand(presentation)));</span>
+        
+<span class="nc" id="L81">        JMenuItem goToMenuItem = new JMenuItem(&quot;Go to...&quot;);</span>
+<span class="nc" id="L82">        goToMenuItem.addActionListener(e -&gt; {</span>
+<span class="nc" id="L83">            String slideNumberStr = dialogService.showInputDialog(&quot;Go to slide number:&quot;);</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">            if (slideNumberStr != null &amp;&amp; !slideNumberStr.trim().isEmpty()) {</span>
+                try {
+<span class="nc" id="L86">                    int slideNumber = Integer.parseInt(slideNumberStr) - 1;</span>
+<span class="nc" id="L87">                    new GotoCommand(presentation, slideNumber).execute();</span>
+<span class="nc" id="L88">                } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L89">                    dialogService.showMessageDialog(&quot;Invalid slide number.&quot;);</span>
+<span class="nc" id="L90">                }</span>
+            }
+<span class="nc" id="L92">        });</span>
+<span class="nc" id="L93">        slideMenu.add(goToMenuItem);</span>
+        
+<span class="nc" id="L95">        JMenu editMenu = new JMenu(&quot;Edit&quot;);</span>
+<span class="nc" id="L96">        JMenuItem addTextMenuItem = new JMenuItem(&quot;Add Text&quot;);</span>
+<span class="nc" id="L97">        addTextMenuItem.addActionListener(e -&gt; {</span>
+<span class="nc" id="L98">            String text = dialogService.showInputDialog(&quot;Enter text content:&quot;);</span>
+<span class="nc bnc" id="L99" title="All 4 branches missed.">            if (text != null &amp;&amp; !text.trim().isEmpty()) {</span>
+<span class="nc" id="L100">                PositionDialog positionDialog = new PositionDialog(frame);</span>
+<span class="nc" id="L101">                Position position = positionDialog.showDialog();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">                if (position != null) {</span>
+<span class="nc" id="L103">                    TextItem textItem = new TextItem(Constants.DEFAULT_LEVEL, text.trim());</span>
+<span class="nc" id="L104">                    textItem.setPosition(position.getX(), position.getY());</span>
+<span class="nc" id="L105">                    textItem.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="nc" id="L106">                    presentation.getCurrentSlide().append(textItem);</span>
+                }
+            }
+<span class="nc" id="L109">        });</span>
+<span class="nc" id="L110">        editMenu.add(addTextMenuItem);</span>
+        
+<span class="nc" id="L112">        JMenuItem addImageMenuItem = new JMenuItem(&quot;Add Image&quot;);</span>
+<span class="nc" id="L113">        addImageMenuItem.addActionListener(e -&gt; {</span>
+<span class="nc" id="L114">            String imagePath = fileService.getFilePathToOpen();</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            if (imagePath != null) {</span>
+                try {
+<span class="nc" id="L117">                    PositionDialog positionDialog = new PositionDialog(frame);</span>
+<span class="nc" id="L118">                    Position position = positionDialog.showDialog();</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                    if (position != null) {</span>
+<span class="nc" id="L120">                        BitmapItem bitmapItem = new BitmapItem(Constants.DEFAULT_LEVEL, imagePath);</span>
+<span class="nc" id="L121">                        bitmapItem.setPosition(position.getX(), position.getY());</span>
+<span class="nc" id="L122">                        presentation.getCurrentSlide().append(bitmapItem);</span>
+                    }
+<span class="nc" id="L124">                } catch (Exception ex) {</span>
+<span class="nc" id="L125">                    dialogService.showMessageDialog(&quot;Error loading image: &quot; + ex.getMessage());</span>
+<span class="nc" id="L126">                }</span>
+            }
+<span class="nc" id="L128">        });</span>
+<span class="nc" id="L129">        editMenu.add(addImageMenuItem);</span>
+        
+<span class="nc" id="L131">        JMenuItem addShapeMenuItem = new JMenuItem(&quot;Add Shape&quot;);</span>
+<span class="nc" id="L132">        addShapeMenuItem.addActionListener(e -&gt; {</span>
+<span class="nc" id="L133">            String shapeType = dialogService.showInputDialog(&quot;Enter shape type (Rectangle, Oval, Line):&quot;);</span>
+<span class="nc bnc" id="L134" title="All 4 branches missed.">            if (shapeType != null &amp;&amp; !shapeType.trim().isEmpty()) {</span>
+                try {
+<span class="nc" id="L136">                    PositionDialog positionDialog = new PositionDialog(frame);</span>
+<span class="nc" id="L137">                    Position position = positionDialog.showDialog();</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                    if (position != null) {</span>
+<span class="nc" id="L139">                        ShapeItem shapeItem = new ShapeItem(Constants.DEFAULT_LEVEL, shapeType.trim(), Color.BLACK);</span>
+<span class="nc" id="L140">                        shapeItem.setPosition(position.getX(), position.getY());</span>
+<span class="nc" id="L141">                        presentation.getCurrentSlide().append(shapeItem);</span>
+                    }
+<span class="nc" id="L143">                } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L144">                    dialogService.showMessageDialog(&quot;Error creating shape: &quot; + ex.getMessage());</span>
+<span class="nc" id="L145">                }</span>
+            }
+<span class="nc" id="L147">        });</span>
+<span class="nc" id="L148">        editMenu.add(addShapeMenuItem);</span>
+        
+<span class="nc" id="L150">        menuBar.add(fileMenu);</span>
+<span class="nc" id="L151">        menuBar.add(slideMenu);</span>
+<span class="nc" id="L152">        menuBar.add(editMenu);</span>
+<span class="nc" id="L153">        frame.setJMenuBar(menuBar);</span>
+<span class="nc" id="L154">    }</span>
+
+    private static JMenuItem createMenuItem(String label, Command command) {
+<span class="nc" id="L157">        JMenuItem menuItem = new JMenuItem(label);</span>
+<span class="nc" id="L158">        menuItem.addActionListener(e -&gt; command.execute());</span>
+<span class="nc" id="L159">        return menuItem;</span>
+    }
+
+    private static void setupKeyBindings(JFrame frame, Presentation presentation, DialogService dialogService, FileService fileService) {
+<span class="nc" id="L163">        frame.addKeyListener(new KeyAdapter() {</span>
+            @Override
+            public void keyPressed(KeyEvent e) {
+<span class="nc bnc" id="L166" title="All 4 branches missed.">                switch (e.getKeyCode()) {</span>
+                    case KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER, KeyEvent.VK_PLUS -&gt;
+<span class="nc" id="L168">                        new NextSlideCommand(presentation).execute();</span>
+                    case KeyEvent.VK_PAGE_UP, KeyEvent.VK_LEFT, KeyEvent.VK_MINUS -&gt;
+<span class="nc" id="L170">                        new PrevSlideCommand(presentation).execute();</span>
+                    case KeyEvent.VK_ESCAPE -&gt;
+<span class="nc" id="L172">                        new ExitCommand(frame, presentation, fileService, dialogService).execute();</span>
+                }
+<span class="nc" id="L174">            }</span>
+        });
+<span class="nc" id="L176">        frame.setFocusable(true);</span>
+<span class="nc" id="L177">        frame.requestFocus();</span>
+<span class="nc" id="L178">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

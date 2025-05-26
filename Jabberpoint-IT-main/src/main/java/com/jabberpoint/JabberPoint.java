@@ -1,10 +1,20 @@
 package com.jabberpoint;
 
 import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.composite.items.BitmapItem;
+import com.jabberpoint.composite.items.ShapeItem;
+import com.jabberpoint.composite.items.TextItem;
 import com.jabberpoint.view.SlideViewerComponent;
 import com.jabberpoint.command.*;
 import com.jabberpoint.util.XMLAccessor;
 import com.jabberpoint.util.DemoPresentation;
+import com.jabberpoint.util.Constants;
+import com.jabberpoint.util.Position;
+import com.jabberpoint.service.DialogService;
+import com.jabberpoint.service.FileService;
+import com.jabberpoint.service.PositionDialog;
+import com.jabberpoint.service.swing.SwingDialogService;
+import com.jabberpoint.service.swing.SwingFileService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,46 +22,24 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.io.IOException;
 
-/**
- * JabberPoint Main Program
- * <p>This program is distributed under the terms of the accompanying
- * README file.</p>
- * <p>This program is copyrighted by its author.</p>
- * <p>This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.</p>
- * <p>This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.</p>
- * <p>You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the Free
- * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
- * MA 02111-1307, USA.</p>
- */
 public class JabberPoint {
     private static final String WINDOW_TITLE = "JabberPoint";
-    private static final int WINDOW_WIDTH = 1200;
-    private static final int WINDOW_HEIGHT = 800;
+    private static SlideViewerComponent slideViewer;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                // Set system look and feel for better UI
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
                 System.err.println("Could not set system look and feel: " + e.getMessage());
             }
-            
             Presentation presentation = DemoPresentation.createDemoPresentation();
             JFrame frame = createFrame(presentation);
-            setupKeyBindings(frame, presentation);
-            
-            // Ensure we start at the first slide
+            DialogService dialogService = new SwingDialogService(frame);
+            FileService fileService = new SwingFileService(frame);
+            createMenuBar(frame, presentation, dialogService, fileService);
+            setupKeyBindings(frame, presentation, dialogService, fileService);
             presentation.goToSlide(0);
-            
-            // Center the frame and show it
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
@@ -60,49 +48,105 @@ public class JabberPoint {
     private static JFrame createFrame(Presentation presentation) {
         JFrame frame = new JFrame(WINDOW_TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        frame.setSize(Constants.WIDTH, Constants.HEIGHT);
         frame.setMinimumSize(new Dimension(800, 600));
-        
-        // Create the slide viewer with a white background
-        SlideViewerComponent slideViewer = new SlideViewerComponent(presentation, frame);
+        slideViewer = new SlideViewerComponent(presentation, frame);
         slideViewer.setBackground(Color.WHITE);
-        
-        // Add the slide viewer to a scroll pane
         JScrollPane scrollPane = new JScrollPane(slideViewer);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove border for cleaner look
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getViewport().setBackground(Color.WHITE);
-        
         frame.add(scrollPane);
-        createMenuBar(frame, presentation);
-
         return frame;
     }
 
-    private static void createMenuBar(JFrame frame, Presentation presentation) {
+    private static void createMenuBar(JFrame frame, Presentation presentation, DialogService dialogService, FileService fileService) {
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // Add some padding
-
+        menuBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        
         JMenu fileMenu = new JMenu("File");
-        fileMenu.add(createMenuItem("New", new NewCommand(presentation, frame)));
-        fileMenu.add(createMenuItem("Open", new OpenCommand(presentation, frame)));
-        fileMenu.add(createMenuItem("Save", new SaveCommand(presentation, frame)));
+        fileMenu.add(createMenuItem("New", new NewCommand(presentation, dialogService)));
+        fileMenu.add(createMenuItem("Open", new OpenCommand(presentation, fileService, dialogService)));
+        fileMenu.add(createMenuItem("Save", new SaveCommand(presentation, fileService, dialogService)));
         fileMenu.addSeparator();
-        fileMenu.add(createMenuItem("Exit", new ExitCommand(frame, presentation)));
-
+        fileMenu.add(createMenuItem("Exit", new ExitCommand(frame, presentation, fileService, dialogService)));
+        
         JMenu slideMenu = new JMenu("Slide");
-        slideMenu.add(createMenuItem("New Slide", new AddSlideCommand(presentation, frame)));
+        slideMenu.add(createMenuItem("New Slide", new AddSlideCommand(presentation, dialogService)));
         slideMenu.addSeparator();
         slideMenu.add(createMenuItem("Next", new NextSlideCommand(presentation)));
         slideMenu.add(createMenuItem("Previous", new PrevSlideCommand(presentation)));
-        slideMenu.add(createMenuItem("Go to...", new GotoCommand(presentation, frame)));
-
+        
+        JMenuItem goToMenuItem = new JMenuItem("Go to...");
+        goToMenuItem.addActionListener(e -> {
+            String slideNumberStr = dialogService.showInputDialog("Go to slide number:");
+            if (slideNumberStr != null && !slideNumberStr.trim().isEmpty()) {
+                try {
+                    int slideNumber = Integer.parseInt(slideNumberStr) - 1;
+                    new GotoCommand(presentation, slideNumber).execute();
+                } catch (NumberFormatException ex) {
+                    dialogService.showMessageDialog("Invalid slide number.");
+                }
+            }
+        });
+        slideMenu.add(goToMenuItem);
+        
         JMenu editMenu = new JMenu("Edit");
-        editMenu.add(createMenuItem("Add Text", new AddTextCommand(presentation, frame)));
-        editMenu.add(createMenuItem("Add Image", new AddImageCommand(presentation, frame)));
-        editMenu.add(createMenuItem("Add Shape", new AddShapeCommand(presentation, frame)));
-
+        JMenuItem addTextMenuItem = new JMenuItem("Add Text");
+        addTextMenuItem.addActionListener(e -> {
+            String text = dialogService.showInputDialog("Enter text content:");
+            if (text != null && !text.trim().isEmpty()) {
+                PositionDialog positionDialog = new PositionDialog(frame);
+                Position position = positionDialog.showDialog();
+                if (position != null) {
+                    TextItem textItem = new TextItem(Constants.DEFAULT_LEVEL, text.trim());
+                    textItem.setPosition(position.getX(), position.getY());
+                    textItem.setFontSize(Constants.DEFAULT_FONT_SIZE);
+                    presentation.getCurrentSlide().append(textItem);
+                }
+            }
+        });
+        editMenu.add(addTextMenuItem);
+        
+        JMenuItem addImageMenuItem = new JMenuItem("Add Image");
+        addImageMenuItem.addActionListener(e -> {
+            String imagePath = fileService.getFilePathToOpen();
+            if (imagePath != null) {
+                try {
+                    PositionDialog positionDialog = new PositionDialog(frame);
+                    Position position = positionDialog.showDialog();
+                    if (position != null) {
+                        BitmapItem bitmapItem = new BitmapItem(Constants.DEFAULT_LEVEL, imagePath);
+                        bitmapItem.setPosition(position.getX(), position.getY());
+                        presentation.getCurrentSlide().append(bitmapItem);
+                    }
+                } catch (Exception ex) {
+                    dialogService.showMessageDialog("Error loading image: " + ex.getMessage());
+                }
+            }
+        });
+        editMenu.add(addImageMenuItem);
+        
+        JMenuItem addShapeMenuItem = new JMenuItem("Add Shape");
+        addShapeMenuItem.addActionListener(e -> {
+            String shapeType = dialogService.showInputDialog("Enter shape type (Rectangle, Oval, Line):");
+            if (shapeType != null && !shapeType.trim().isEmpty()) {
+                try {
+                    PositionDialog positionDialog = new PositionDialog(frame);
+                    Position position = positionDialog.showDialog();
+                    if (position != null) {
+                        ShapeItem shapeItem = new ShapeItem(Constants.DEFAULT_LEVEL, shapeType.trim(), Color.BLACK);
+                        shapeItem.setPosition(position.getX(), position.getY());
+                        presentation.getCurrentSlide().append(shapeItem);
+                    }
+                } catch (IllegalArgumentException ex) {
+                    dialogService.showMessageDialog("Error creating shape: " + ex.getMessage());
+                }
+            }
+        });
+        editMenu.add(addShapeMenuItem);
+        
         menuBar.add(fileMenu);
         menuBar.add(slideMenu);
         menuBar.add(editMenu);
@@ -115,7 +159,7 @@ public class JabberPoint {
         return menuItem;
     }
 
-    private static void setupKeyBindings(JFrame frame, Presentation presentation) {
+    private static void setupKeyBindings(JFrame frame, Presentation presentation, DialogService dialogService, FileService fileService) {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -125,7 +169,7 @@ public class JabberPoint {
                     case KeyEvent.VK_PAGE_UP, KeyEvent.VK_LEFT, KeyEvent.VK_MINUS ->
                         new PrevSlideCommand(presentation).execute();
                     case KeyEvent.VK_ESCAPE ->
-                        new ExitCommand(frame, presentation).execute();
+                        new ExitCommand(frame, presentation, fileService, dialogService).execute();
                 }
             }
         });

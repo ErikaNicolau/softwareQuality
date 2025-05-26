@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AddTextCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.command</a> &gt; <span class="el_source">AddTextCommand.java</span></div><h1>AddTextCommand.java</h1><pre class="source lang-java linenums">package com.jabberpoint.command;
+
+import com.jabberpoint.composite.Slide;
+import com.jabberpoint.composite.items.TextItem;
+import com.jabberpoint.service.DialogService;
+import com.jabberpoint.util.Constants;
+import com.jabberpoint.util.Position;
+
+public class AddTextCommand implements Command {
+    private final Receiver receiver;
+    private final DialogService dialogService;
+    private final String text;
+    private final Position position;
+
+<span class="fc" id="L15">    public AddTextCommand(Receiver receiver, DialogService dialogService, String text, Position position) {</span>
+<span class="fc" id="L16">        this.receiver = receiver;</span>
+<span class="fc" id="L17">        this.dialogService = dialogService;</span>
+<span class="fc" id="L18">        this.text = text;</span>
+<span class="fc" id="L19">        this.position = position;</span>
+<span class="fc" id="L20">    }</span>
+
+    @Override
+    public void execute() {
+<span class="fc" id="L24">        Slide currentSlide = receiver.getCurrentSlide();</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (currentSlide == null) {</span>
+<span class="fc" id="L26">            dialogService.showMessageDialog(&quot;Please create a slide first using the Slide menu!&quot;);</span>
+<span class="fc" id="L27">            return;</span>
+        }
+<span class="fc" id="L29">        TextItem textItem = new TextItem(Constants.DEFAULT_LEVEL, text);</span>
+<span class="fc" id="L30">        textItem.setPosition(position.getX(), position.getY());</span>
+<span class="fc" id="L31">        textItem.setSize(position.getWidth(), position.getHeight());</span>
+<span class="fc" id="L32">        textItem.setFontSize(Constants.DEFAULT_FONT_SIZE);</span>
+<span class="fc" id="L33">        currentSlide.append(textItem);</span>
+<span class="fc" id="L34">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,37 +1,40 @@
 package com.jabberpoint.command;
 
 import com.jabberpoint.composite.Presentation;
+import com.jabberpoint.service.DialogService;
+import com.jabberpoint.service.FileService;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 public class ExitCommand implements Command {
     private final JFrame frame;
     private final Presentation presentation;
+    private final FileService fileService;
+    private final DialogService dialogService;
+    private static boolean skipSystemExit = false;
 
-    public ExitCommand(JFrame frame, Presentation presentation) {
+    public static void setSkipSystemExit(boolean skip) {
+        skipSystemExit = skip;
+    }
+
+    public ExitCommand(JFrame frame, Presentation presentation, FileService fileService, DialogService dialogService) {
         this.frame = frame;
         this.presentation = presentation;
+        this.fileService = fileService;
+        this.dialogService = dialogService;
     }
 
     @Override
     public void execute() {
         if (presentation.hasUnsavedChanges()) {
-            int response = JOptionPane.showConfirmDialog(frame,
-                "Do you want to save the presentation before exiting?",
-                "Save before exit?",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-                
-            if (response == JOptionPane.CANCEL_OPTION) {
+            boolean shouldSave = dialogService.showConfirmDialog("Do you want to save the presentation before exiting?");
+            if (!shouldSave) {
                 return;
             }
-            
-            if (response == JOptionPane.YES_OPTION) {
-                new SaveCommand(presentation, frame).execute();
-            }
+            new SaveCommand(presentation, fileService, dialogService).execute();
         }
-        
         frame.dispose();
-        System.exit(0);
+        if (!skipSystemExit) {
+            System.exit(0);
+        }
     }
 } 

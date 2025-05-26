@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Presentation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.composite</a> &gt; <span class="el_source">Presentation.java</span></div><h1>Presentation.java</h1><pre class="source lang-java linenums">package com.jabberpoint.composite;
+
+import com.jabberpoint.command.Receiver;
+import com.jabberpoint.composite.items.SlideItem;
+import com.jabberpoint.observer.SlideObserver;
+import java.util.ArrayList;
+import java.util.List;
+import com.jabberpoint.util.Constants;
+
+public class Presentation implements Receiver {
+    private String title;
+    private final List&lt;Slide&gt; slides;
+    private int currentSlideNumber;
+    private final List&lt;SlideObserver&gt; observers;
+    private boolean hasUnsavedChanges;
+    private String currentFileName;
+
+<span class="fc" id="L18">    public Presentation() {</span>
+<span class="fc" id="L19">        this.title = &quot;&quot;;</span>
+<span class="fc" id="L20">        this.slides = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L21">        this.currentSlideNumber = 0;</span>
+<span class="fc" id="L22">        this.observers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L23">        this.hasUnsavedChanges = false;</span>
+<span class="fc" id="L24">        this.currentFileName = null;</span>
+<span class="fc" id="L25">    }</span>
+
+    public void addObserver(SlideObserver observer) {
+<span class="fc" id="L28">        observers.add(observer);</span>
+<span class="fc" id="L29">    }</span>
+
+    public void removeObserver(SlideObserver observer) {
+<span class="fc" id="L32">        observers.remove(observer);</span>
+<span class="fc" id="L33">    }</span>
+
+    private void notifyObservers() {
+<span class="fc" id="L36">        observers.forEach(observer -&gt; observer.update(getCurrentSlide()));</span>
+<span class="fc" id="L37">    }</span>
+
+    public void setTitle(String title) {
+<span class="fc" id="L40">        this.title = title;</span>
+<span class="fc" id="L41">        markAsChanged();</span>
+<span class="fc" id="L42">    }</span>
+
+    public String getTitle() {
+<span class="fc" id="L45">        return title;</span>
+    }
+
+    public void append(Slide slide) {
+<span class="fc" id="L49">        slides.add(slide);</span>
+<span class="fc" id="L50">        slide.addObserver(s -&gt; notifyObservers());</span>
+<span class="fc" id="L51">        currentSlideNumber = slides.size() - 1;</span>
+<span class="fc" id="L52">        notifyObservers();</span>
+<span class="fc" id="L53">        markAsChanged();</span>
+<span class="fc" id="L54">    }</span>
+
+    public Slide getCurrentSlide() {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (slides.isEmpty()) {</span>
+<span class="fc" id="L58">            return null;</span>
+        }
+<span class="fc" id="L60">        return slides.get(currentSlideNumber);</span>
+    }
+
+    public void nextSlide() {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (currentSlideNumber &lt; slides.size() - 1) {</span>
+<span class="fc" id="L65">            currentSlideNumber++;</span>
+<span class="fc" id="L66">            notifyObservers();</span>
+        }
+<span class="fc" id="L68">    }</span>
+
+    public void previousSlide() {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (currentSlideNumber &gt; 0) {</span>
+<span class="fc" id="L72">            currentSlideNumber--;</span>
+<span class="fc" id="L73">            notifyObservers();</span>
+        }
+<span class="fc" id="L75">    }</span>
+
+    public void goToSlide(int slideNumber) {
+<span class="fc bfc" id="L78" title="All 4 branches covered.">        if (slideNumber &gt;= 0 &amp;&amp; slideNumber &lt; slides.size()) {</span>
+<span class="fc" id="L79">            currentSlideNumber = slideNumber;</span>
+<span class="fc" id="L80">            notifyObservers();</span>
+        }
+<span class="fc" id="L82">    }</span>
+
+    public int getCurrentSlideNumber() {
+<span class="fc" id="L85">        return currentSlideNumber;</span>
+    }
+
+    public int getTotalSlides() {
+<span class="fc" id="L89">        return slides.size();</span>
+    }
+
+    public void clear() {
+<span class="fc" id="L93">        slides.clear();</span>
+<span class="fc" id="L94">        currentSlideNumber = 0;</span>
+<span class="fc" id="L95">        notifyObservers();</span>
+<span class="fc" id="L96">        markAsChanged();</span>
+<span class="fc" id="L97">    }</span>
+
+    public void markAsChanged() {
+<span class="fc" id="L100">        this.hasUnsavedChanges = true;</span>
+<span class="fc" id="L101">    }</span>
+
+    public void markAsSaved(String filename) {
+<span class="fc" id="L104">        this.hasUnsavedChanges = false;</span>
+<span class="fc" id="L105">        this.currentFileName = filename;</span>
+<span class="fc" id="L106">    }</span>
+
+    public boolean hasUnsavedChanges() {
+<span class="fc" id="L109">        return hasUnsavedChanges;</span>
+    }
+
+    public String getCurrentFileName() {
+<span class="fc" id="L113">        return currentFileName;</span>
+    }
+
+    @Override
+    public void append(SlideItem item) {
+<span class="nc" id="L118">        getCurrentSlide().append(item);</span>
+<span class="nc" id="L119">        markAsChanged();</span>
+<span class="nc" id="L120">        notifyObservers();</span>
+<span class="nc" id="L121">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

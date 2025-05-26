@@ -1,0 +1,123 @@
+name: DTAP Workflow
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    
+    - name: Build and Test
+      run: mvn -B clean verify
+      working-directory: Jabberpoint-IT-main
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: Jabberpoint-IT-main/target/surefire-reports/
+    
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: Jabberpoint-IT-main/target/site/jacoco/
+
+  deploy-development:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/develop'
+    runs-on: windows-latest
+    environment: development
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Build and Deploy
+      run: |
+        mvn -B clean package -Pdev
+        New-Item -ItemType Directory -Path "D:\opt\jabberpoint\dev" -Force
+        Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\dev\"
+      working-directory: Jabberpoint-IT-main
+
+  deploy-testing:
+    needs: deploy-development
+    if: github.ref == 'refs/heads/develop'
+    runs-on: windows-latest
+    environment: testing
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Build and Deploy
+      run: |
+        mvn -B clean package -Ptest
+        mvn verify -Ptest
+        New-Item -ItemType Directory -Path "D:\opt\jabberpoint\test" -Force
+        Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\test\"
+      working-directory: Jabberpoint-IT-main
+
+  deploy-acceptance:
+    needs: deploy-testing
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    environment: acceptance
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Build and Deploy
+      run: |
+        mvn -B clean package -Pacc
+        New-Item -ItemType Directory -Path "D:\opt\jabberpoint\acc" -Force
+        Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\acc\"
+      working-directory: Jabberpoint-IT-main
+
+  deploy-production:
+    needs: deploy-acceptance
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    environment: production
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Build and Deploy
+      run: |
+        mvn -B clean package -Pprod
+        New-Item -ItemType Directory -Path "D:\opt\jabberpoint\prod" -Force
+        Copy-Item -Path "target\*.jar" -Destination "D:\opt\jabberpoint\prod\"
+      working-directory: Jabberpoint-IT-main

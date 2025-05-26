@@ -2,27 +2,22 @@ package com.jabberpoint.command;
 
 import com.jabberpoint.composite.Presentation;
 import com.jabberpoint.composite.Slide;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import com.jabberpoint.service.DialogService;
 
 public class AddSlideCommand implements Command {
     private final Presentation presentation;
-    private final JFrame frame;
+    private final DialogService dialogService;
 
-    public AddSlideCommand(Presentation presentation, JFrame frame) {
+    public AddSlideCommand(Presentation presentation, DialogService dialogService) {
         this.presentation = presentation;
-        this.frame = frame;
+        this.dialogService = dialogService;
     }
 
     @Override
     public void execute() {
         Slide newSlide = new Slide();
         presentation.append(newSlide);
-        presentation.goToSlide(presentation.getTotalSlides() - 1); // Go to the new slide
-        
-        JOptionPane.showMessageDialog(frame, 
-            "New blank slide added!\nUse the Edit menu to add content.", 
-            "Slide Added", 
-            JOptionPane.INFORMATION_MESSAGE);
+        presentation.goToSlide(presentation.getTotalSlides() - 1);
+        dialogService.showMessageDialog("New blank slide added!\nUse the Edit menu to add content.");
     }
 } 

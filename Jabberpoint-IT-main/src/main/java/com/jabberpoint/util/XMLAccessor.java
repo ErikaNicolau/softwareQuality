@@ -122,7 +122,21 @@ public class XMLAccessor {
 
     private void loadSlideItem(Slide slide, Element item) {
         String kind = item.getAttribute(ITEM_KIND_ATTRIBUTE);
-        int level = Integer.parseInt(item.getAttribute(ITEM_LEVEL_ATTRIBUTE));
+        if (kind == null || kind.trim().isEmpty()) {
+            throw new IllegalArgumentException("Item 'kind' attribute is missing or empty.");
+        }
+
+        int level;
+        String levelStr = item.getAttribute(ITEM_LEVEL_ATTRIBUTE);
+        if (levelStr == null || levelStr.trim().isEmpty()) {
+             throw new IllegalArgumentException("Item 'level' attribute is missing or empty.");
+        }
+        try {
+            level = Integer.parseInt(levelStr);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid value for item 'level' attribute: " + levelStr, e);
+        }
+
         String content = item.getTextContent();
         
         SlideItem slideItem = null;
@@ -140,9 +154,17 @@ public class XMLAccessor {
             case "shape":
                 String shapeType = item.getAttribute(ITEM_SHAPE_TYPE_ATTRIBUTE);
                 String colorStr = item.getAttribute(ITEM_COLOR_ATTRIBUTE);
-                Color color = Color.decode(colorStr);
+                Color color;
+                 try {
+                    color = Color.decode(colorStr);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid value for shape 'color' attribute: " + colorStr, e);
+                }
+
                 slideItem = new ShapeItem(level, shapeType, color);
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown item kind: " + kind);
         }
 
         if (slideItem != null) {
@@ -162,7 +184,7 @@ public class XMLAccessor {
         }
     }
 
-    private String getItemType(SlideItem item) {
+    String getItemType(SlideItem item) {
         if (item instanceof TextItem) return "text";
         if (item instanceof BitmapItem) return "image";
         if (item instanceof ShapeItem) return "shape";

@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import com.jabberpoint.util.Constants;
 
 class ShapeItemTest {
     private ShapeItem shapeItem;
     private static final String SHAPE_TYPE = "Rectangle";
     private static final Color SHAPE_COLOR = Color.RED;
-    private static final int DEFAULT_WIDTH = 200;
-    private static final int DEFAULT_HEIGHT = 150;
 
     @BeforeEach
     void setUp() {
@@ -20,8 +19,8 @@ class ShapeItemTest {
 
     @Test
     void testDefaultSize() {
-        assertEquals(DEFAULT_WIDTH, shapeItem.getBoundingBox().width);
-        assertEquals(DEFAULT_HEIGHT, shapeItem.getBoundingBox().height);
+        assertEquals(Constants.DEFAULT_WIDTH, shapeItem.getBoundingBox().width);
+        assertEquals(Constants.DEFAULT_HEIGHT, shapeItem.getBoundingBox().height);
     }
 
     @Test
@@ -55,10 +54,8 @@ class ShapeItemTest {
         BufferedImage outputImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = outputImage.createGraphics();
         
-        // Test drawing with default position
         shapeItem.draw(g2d, 0, 0, 1.0f, null);
         
-        // Test drawing with custom position
         shapeItem.setPosition(100, 100);
         shapeItem.draw(g2d, 0, 0, 1.0f, null);
         
@@ -67,15 +64,12 @@ class ShapeItemTest {
 
     @Test
     void testDifferentShapeTypes() {
-        // Test Rectangle
         ShapeItem rectangle = new ShapeItem(1, "Rectangle", Color.BLUE);
         assertNotNull(rectangle.getBoundingBox());
         
-        // Test Oval
         ShapeItem oval = new ShapeItem(1, "Oval", Color.GREEN);
         assertNotNull(oval.getBoundingBox());
         
-        // Test Line
         ShapeItem line = new ShapeItem(1, "Line", Color.BLACK);
         assertNotNull(line.getBoundingBox());
     }
@@ -90,15 +84,106 @@ class ShapeItemTest {
 
     @Test
     void testSizeAffectsBoundingBox() {
-        // Get bounding box with default size
-        Rectangle defaultBounds = shapeItem.getBoundingBox();
+        int customWidth = 400;
+        int customHeight = 300;
+        shapeItem.setSize(customWidth, customHeight);
+        Rectangle customBounds = shapeItem.getBoundingBox();
         
-        // Increase size
-        shapeItem.setSize(400, 300);
-        Rectangle largeBounds = shapeItem.getBoundingBox();
+        assertEquals(customWidth, customBounds.width);
+        assertEquals(customHeight, customBounds.height);
+    }
+
+    @Test
+    void testGetContent() {
+        assertEquals(SHAPE_TYPE + " " + SHAPE_COLOR.toString(), shapeItem.getContent());
+    }
+
+    @Test
+    void testGetLevel() {
+        assertEquals(1, shapeItem.getLevel());
+    }
+
+    @Test
+    void testInvalidShapeType() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            new ShapeItem(1, "InvalidShape", Color.BLACK)
+        );
+    }
+
+    @Test
+    void testNullColor() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            new ShapeItem(1, SHAPE_TYPE, null)
+        );
+    }
+
+    @Test
+    void testNegativeDimensions() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setSize(-100, 100)
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setSize(100, -100)
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setSize(-100, -100)
+        );
+    }
+
+    @Test
+    void testZeroDimensions() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setSize(0, 100)
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setSize(100, 0)
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setSize(0, 0)
+        );
+    }
+
+    @Test
+    void testNegativePosition() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setPosition(-100, 100)
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setPosition(100, -100)
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.setPosition(-100, -100)
+        );
+    }
+
+    @Test
+    void testDrawWithNullGraphics() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.draw(null, 0, 0, 1.0f, null)
+        );
+    }
+
+    @Test
+    void testDrawWithNegativeScale() {
+        BufferedImage outputImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = outputImage.createGraphics();
         
-        // Larger size should result in larger bounding box
-        assertTrue(largeBounds.width > defaultBounds.width);
-        assertTrue(largeBounds.height > defaultBounds.height);
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.draw(g2d, 0, 0, -1.0f, null)
+        );
+        
+        g2d.dispose();
+    }
+
+    @Test
+    void testDrawWithZeroScale() {
+        BufferedImage outputImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = outputImage.createGraphics();
+        
+        assertThrows(IllegalArgumentException.class, () -> 
+            shapeItem.draw(g2d, 0, 0, 0.0f, null)
+        );
+        
+        g2d.dispose();
     }
 } 

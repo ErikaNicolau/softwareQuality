@@ -9,21 +9,17 @@ import java.awt.image.ImageObserver;
 import com.jabberpoint.util.Constants;
 
 public class TextItem extends SlideItem {
-    private static final String DEFAULT_TEXT = "No Text Given";
-    private static final int DEFAULT_LEVEL = 1;
-    private static final int DEFAULT_FONT_SIZE = 20;
-
     private String text;
     private int fontSize;
 
     public TextItem() {
-        this(DEFAULT_LEVEL, DEFAULT_TEXT);
+        this(Constants.DEFAULT_LEVEL, Constants.DEFAULT_TEXT);
     }
 
     public TextItem(int level, String text) {
         super(level);
         this.text = text;
-        this.fontSize = DEFAULT_FONT_SIZE;
+        this.fontSize = Constants.DEFAULT_FONT_SIZE;
     }
 
     public void setFontSize(int fontSize) {
@@ -46,7 +42,7 @@ public class TextItem extends SlideItem {
 
     @Override
     public void draw(Graphics g, int x, int y, float scale, ImageObserver observer) {
-        Font font = new Font("Helvetica", Font.BOLD, (int) (fontSize * scale));
+        Font font = new Font(Constants.FONT_NAME, Constants.FONT_STYLE, (int) (fontSize * scale));
         g.setFont(font);
         FontMetrics metrics = g.getFontMetrics(font);
         

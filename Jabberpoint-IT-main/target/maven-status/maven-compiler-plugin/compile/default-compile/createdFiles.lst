@@ -1,7 +1,9 @@
 com\jabberpoint\command\ExitCommand.class
 com\jabberpoint\factory\ItemDrawer.class
+com\jabberpoint\service\FileService.class
 com\jabberpoint\JabberPoint$1.class
 com\jabberpoint\util\DemoPresentation.class
+com\jabberpoint\service\swing\SwingDialogService.class
 com\jabberpoint\composite\items\BitmapItem.class
 com\jabberpoint\command\Command.class
 com\jabberpoint\util\XMLAccessor.class
@@ -11,14 +13,17 @@ com\jabberpoint\composite\items\ShapeItem.class
 com\jabberpoint\command\PrevSlideCommand.class
 com\jabberpoint\composite\items\TextItem.class
 com\jabberpoint\command\GotoCommand.class
+com\jabberpoint\command\Receiver.class
 com\jabberpoint\command\AddShapeCommand.class
 com\jabberpoint\composite\Presentation.class
 com\jabberpoint\factory\ShapeDrawer.class
+com\jabberpoint\service\swing\SwingFileService.class
 com\jabberpoint\composite\items\SlideItem.class
 com\jabberpoint\factory\TextDrawer.class
 com\jabberpoint\JabberPoint.class
 com\jabberpoint\observer\SlideObserver.class
 com\jabberpoint\command\OpenCommand.class
+com\jabberpoint\service\PositionDialog.class
 com\jabberpoint\view\SlideViewerComponent.class
 com\jabberpoint\command\NextSlideCommand.class
 com\jabberpoint\command\AddImageCommand.class
@@ -27,5 +32,6 @@ com\jabberpoint\factory\DrawerFactory.class
 com\jabberpoint\command\AddSlideCommand.class
 com\jabberpoint\command\NewCommand.class
 com\jabberpoint\command\SaveCommand.class
-com\jabberpoint\factory\Drawer.class
+com\jabberpoint\service\DialogService.class
 com\jabberpoint\util\Constants.class
+com\jabberpoint\util\Position.class

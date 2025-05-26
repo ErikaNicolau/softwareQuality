@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShapeItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jabberpoint</a> &gt; <a href="index.source.html" class="el_package">com.jabberpoint.composite.items</a> &gt; <span class="el_source">ShapeItem.java</span></div><h1>ShapeItem.java</h1><pre class="source lang-java linenums">package com.jabberpoint.composite.items;
+
+import java.awt.Rectangle;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.image.ImageObserver;
+import com.jabberpoint.util.Constants;
+
+public class ShapeItem extends SlideItem {
+    private String shapeType;
+    private Color color;
+    private Rectangle defaultBounds;
+
+    public ShapeItem(int level, String shapeType, Color color) {
+<span class="fc" id="L15">        super(level);</span>
+<span class="pc bpc" id="L16" title="2 of 4 branches missed.">        if (shapeType == null || shapeType.trim().isEmpty()) {</span>
+<span class="nc" id="L17">            throw new IllegalArgumentException(&quot;Shape type cannot be null or empty.&quot;);</span>
+        }
+        // Validate shape type against supported types
+<span class="fc" id="L20">        String lowerShapeType = shapeType.toLowerCase();</span>
+<span class="fc bfc" id="L21" title="All 6 branches covered.">        if (!lowerShapeType.equals(&quot;rectangle&quot;) &amp;&amp; !lowerShapeType.equals(&quot;oval&quot;) &amp;&amp; !lowerShapeType.equals(&quot;line&quot;)) {</span>
+<span class="fc" id="L22">             throw new IllegalArgumentException(&quot;Invalid shape type: &quot; + shapeType + &quot;. Supported types are Rectangle, Oval, Line.&quot;);</span>
+        }
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (color == null) {</span>
+<span class="fc" id="L25">            throw new IllegalArgumentException(&quot;Color cannot be null.&quot;);</span>
+        }
+<span class="fc" id="L27">        this.shapeType = shapeType;</span>
+<span class="fc" id="L28">        this.color = color;</span>
+<span class="fc" id="L29">        this.defaultBounds = new Rectangle(0, 0, Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT);</span>
+<span class="fc" id="L30">        setSize(Constants.DEFAULT_WIDTH, Constants.DEFAULT_HEIGHT); // Set initial size to default</span>
+<span class="fc" id="L31">    }</span>
+
+    public String getShapeType() {
+<span class="fc" id="L34">        return shapeType;</span>
+    }
+
+    public Color getColor() {
+<span class="fc" id="L38">        return color;</span>
+    }
+
+    @Override
+    public String getContent() {
+<span class="fc" id="L43">        return shapeType + &quot; &quot; + color.toString();</span>
+    }
+
+    @Override
+    protected Rectangle getDefaultBoundingBox() {
+<span class="nc" id="L48">        return defaultBounds;</span>
+    }
+
+    @Override
+    public void draw(Graphics g, int x, int y, float scale, ImageObserver observer) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (g == null) {</span>
+<span class="fc" id="L54">             throw new IllegalArgumentException(&quot;Graphics object cannot be null.&quot;);</span>
+        }
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (scale &lt;= 0) {</span>
+<span class="fc" id="L57">             throw new IllegalArgumentException(&quot;Scale must be positive.&quot;);</span>
+        }
+<span class="fc" id="L59">        Rectangle bounds = getBoundingBox();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        int drawX = hasCustomPosition ? bounds.x : x;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        int drawY = hasCustomPosition ? bounds.y : y;</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        int drawWidth = hasCustomSize ? bounds.width : (int) (bounds.width * scale);</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        int drawHeight = hasCustomSize ? bounds.height : (int) (bounds.height * scale);</span>
+
+<span class="fc" id="L65">        g.setColor(color);</span>
+<span class="pc bpc" id="L66" title="3 of 4 branches missed.">        switch (shapeType.toLowerCase()) {</span>
+            case &quot;rectangle&quot;:
+<span class="fc" id="L68">                g.fillRect(drawX, drawY, drawWidth, drawHeight);</span>
+<span class="fc" id="L69">                break;</span>
+            case &quot;oval&quot;:
+<span class="nc" id="L71">                g.fillOval(drawX, drawY, drawWidth, drawHeight);</span>
+<span class="nc" id="L72">                break;</span>
+            case &quot;line&quot;:
+<span class="nc" id="L74">                g.drawLine(drawX, drawY, drawX + drawWidth, drawY + drawHeight);</span>
+                break;
+        }
+<span class="fc" id="L77">    }</span>
+
+    @Override
+    public Rectangle getBoundingBox() {
+<span class="fc" id="L81">        return new Rectangle(x, y, width, height);</span>
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+<span class="fc bfc" id="L86" title="All 4 branches covered.">        if (x &lt; 0 || y &lt; 0) {</span>
+<span class="fc" id="L87">            throw new IllegalArgumentException(&quot;Position coordinates cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L89">        super.setPosition(x, y);</span>
+<span class="fc" id="L90">    }</span>
+
+    @Override
+    public void setSize(int width, int height) {
+<span class="fc bfc" id="L94" title="All 4 branches covered.">        if (width &lt;= 0 || height &lt;= 0) {</span>
+<span class="fc" id="L95">            throw new IllegalArgumentException(&quot;Dimensions must be positive.&quot;);</span>
+        }
+<span class="fc" id="L97">        super.setSize(width, height);</span>
+<span class="fc" id="L98">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
