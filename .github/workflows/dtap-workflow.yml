@@ -22,7 +22,7 @@ jobs:
         cache: maven
     
     - name: Build and Test
-      run: mvn -B clean package
+      run: mvn -B clean verify
       working-directory: Jabberpoint-IT-main
 
     - name: Upload Test Results
